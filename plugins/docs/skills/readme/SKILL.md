@@ -12,9 +12,14 @@ Generate a clear, technical, user-friendly README.md by analyzing the project.
 
 **Voice:** follow `${CLAUDE_PLUGIN_ROOT}/references/voice.md` — read it before writing.
 
-## Step 1: Scan the Project (subagent)
+## Step 1: Scan the Project
 
-The codebase scan is read-heavy and its raw output doesn't need to live in this thread — dispatch a subagent for it. Use the Agent tool (`general-purpose`) with a prompt asking it to explore the project and return a **compact structured report**, not file dumps:
+Gather the context below. First size the project — `git ls-files | wc -l` (or a quick glance at the tree) — then decide where to do the reading:
+
+- **Small/single-package project** — scan inline, in this thread. It's a handful of files; a subagent adds a round-trip for no benefit.
+- **Large project or monorepo** — the scan reads many files whose raw output you don't need to keep, so dispatch a subagent. Use the Agent tool (`general-purpose`) with a prompt asking it to explore the project and return a **compact structured report**, not file dumps.
+
+Use judgment on the threshold. Either way, gather:
 
 - Project type: language/framework (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`), build system (`Makefile`, `Taskfile`, `justfile`, `docker-compose`), CI (`.gitlab-ci.yml`, `.github/workflows/`).
 - What it does: read main entry point(s) — `src/main.rs`, `main.go`, `index.ts`, `app.py`, package-manifest bin entries, Dockerfile `CMD`/`ENTRYPOINT` — and summarize in 1–2 sentences.
