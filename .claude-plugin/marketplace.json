@@ -45,6 +45,14 @@
       "author": {
         "name": "Semen Loktionov"
       }
+    },
+    {
+      "name": "rust",
+      "source": "./plugins/rust",
+      "description": "Rust conventions and best practices — auto-triggered convention skills plus a /dd:rust:review command",
+      "author": {
+        "name": "Semen Loktionov"
+      }
     }
   ]
 }
