@@ -22,7 +22,9 @@ The method is depth-first and just-in-time: build one complete, working layer at
 
 ## The living doc
 
-Each feature has one markdown doc in `~/Projects/adi-ctx/` (per the user's rule: context/planning docs live only there, never in the project repo). It is the seed a fresh session reads — written for Claude, not for reading cover to cover.
+Each feature has one markdown doc in `~/.context/` — a dedicated directory outside the project repo. Planning docs live there, never in the project itself. It is the seed a fresh session reads — written for Claude, not for reading cover to cover.
+
+**Keep the directory lean:** one dir per project, one file per active feature — `~/.context/<project>/<feature>.md`. Delete a doc once its feature ships; the merged code and git history are the record, so finished docs are just clutter.
 
 **Index, not store.** Each finished decision is a one-line gist plus a pointer (`file:line`, a path, a link) — never pasted code or detail. This is what keeps the doc from bloating into slop as the feature grows.
 
@@ -89,4 +91,4 @@ When the slice is built, wrap it up so it's ready for the user's review. Reviewi
 
 ## Starting a feature from scratch
 
-If there's no doc yet, do Step 1 first, then create the doc in `~/Projects/adi-ctx/` with the structure above, then Step 2. The very first slice of a new project is usually the scaffold (init, README, CLAUDE.md, CI, lint/fmt) — small, green, runnable.
+If there's no doc yet, do Step 1 first, then create the doc in `~/.context/` with the structure above, then Step 2. The very first slice of a new project is usually the scaffold (init, README, CLAUDE.md, CI, lint/fmt) — small, green, runnable.
