@@ -77,14 +77,13 @@ Turn the framed scope into vertical slices:
 
 Build the current slice end to end. Keep the change minimal and within the PR-size budget. If it's growing past ~1k lines, stop and re-slice — tell the user it needs splitting rather than shipping an unreviewable PR.
 
-### Step 4 — Close the slice (the ritual)
+### Step 4 — Close the slice
 
-When a slice is done, run this so the user doesn't have to conduct it by hand:
+When the slice is built, wrap it up so it's ready for the user's review. Reviewing, committing, and clearing the chat are the user's to do — don't do them for the user or tell the user to do them.
 
 1. **Verify green.** Run the build/tests/run command and show the output. No "done" without fresh evidence in the same message.
-2. **Update the doc** — index, not store: mark the slice `[x]` with its pointer, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
-3. **Pick the next slice** — the next takeable item on the frontier.
-4. **Hand off.** Tell the user: the slice is green, the doc is updated, and it's safe to `/clear`. Give them the **one-line seed** for the next session (which doc + which slice).
+2. **Update the doc** — index, not store: mark the slice `[x]` with a pointer to the change, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
+3. **Report completion for review.** State plainly that the slice's implementation is finished, and summarize what changed so the user can review the diff. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **one-line seed** (which doc + which slice) ready for when the user wants to continue — offer it, don't direct.
 
 ## Starting a feature from scratch
 
