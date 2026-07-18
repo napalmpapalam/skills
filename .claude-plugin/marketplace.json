@@ -15,6 +15,14 @@
       }
     },
     {
+      "name": "docs",
+      "source": "./plugins/docs",
+      "description": "Documentation generation skills with a shared technical voice",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    },
+    {
       "name": "herdr",
       "source": "./plugins/herdr",
       "description": "Herdr integration — names the herdr pane after Claude's chat title",

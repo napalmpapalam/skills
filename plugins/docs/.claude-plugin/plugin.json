@@ -1,0 +1,8 @@
+{
+  "name": "dd:docs",
+  "version": "0.1.0",
+  "description": "Documentation generation skills with a shared technical voice",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}
