@@ -44,3 +44,19 @@ Result: `plugins/git/skills/commit/SKILL.md` → `/dd:git:commit`. Enforced by `
    bash scripts/check-duplicates.sh
    bash scripts/validate-naming.sh
    ```
+
+## Hooks
+
+A plugin's `hooks/hooks.json` must wrap the event map under a top-level `"hooks"` key — otherwise auto-discovery silently finds zero hooks:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/foo.sh\"", "timeout": 10 } ] }
+    ]
+  }
+}
+```
+
+Reference scripts with `${CLAUDE_PLUGIN_ROOT}` (not absolute paths). It's an **environment variable**, so wrap it in **double** quotes — single quotes pass it to the shell literally and the path won't resolve. Verify with `claude plugin details <plugin>@<marketplace>` — it should report the expected `Hooks (N)`.

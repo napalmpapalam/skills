@@ -13,6 +13,14 @@
       "author": {
         "name": "Semen Loktionov"
       }
+    },
+    {
+      "name": "herdr",
+      "source": "./plugins/herdr",
+      "description": "Herdr integration — names the herdr pane after Claude's chat title",
+      "author": {
+        "name": "Semen Loktionov"
+      }
     }
   ]
 }
