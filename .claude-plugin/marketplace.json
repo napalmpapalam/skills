@@ -1,8 +1,18 @@
 {
   "name": "napalmpapalam-skills",
+  "description": "Personal Claude Code skills and plugins",
   "owner": {
     "name": "Semen Loktionov",
     "email": "loktionov.kh@gmail.com"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "git",
+      "source": "./plugins/git",
+      "description": "Git conventions and workflows for Claude Code",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    }
+  ]
 }
