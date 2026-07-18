@@ -1,5 +1,8 @@
 # skills
 
+[![Validate](https://github.com/napalmpapalam/skills/actions/workflows/validate.yml/badge.svg)](https://github.com/napalmpapalam/skills/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A personal [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace — a registry of plugins bundling skills, commands, and agents, installable via `/plugin`.
 
 ## Prerequisites
@@ -8,17 +11,19 @@ A personal [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin mar
 
 ## Installation
 
-Add the marketplace, then install a plugin:
+Inside Claude Code, add the marketplace, then install any plugin:
 
 ```
 /plugin marketplace add napalmpapalam/skills
-/plugin install git@napalmpapalam-skills
+/plugin install flow@napalmpapalam-skills
 ```
 
-Run these as slash commands inside Claude Code. To install from a local checkout instead of GitHub:
+Install any plugin by name — `git`, `docs`, `flow`, `rules`, `herdr` (e.g. `/plugin install rules@napalmpapalam-skills`).
+
+The marketplace also accepts a full git URL:
 
 ```
-/plugin marketplace add /path/to/skills
+/plugin marketplace add https://github.com/napalmpapalam/skills.git   # or git@github.com:napalmpapalam/skills.git
 ```
 
 ## Available Plugins
