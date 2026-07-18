@@ -31,6 +31,14 @@
       }
     },
     {
+      "name": "flow",
+      "source": "./plugins/flow",
+      "description": "Plan and ship features as vertical slices through one living doc",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    },
+    {
       "name": "herdr",
       "source": "./plugins/herdr",
       "description": "Herdr integration — names the herdr pane after Claude's chat title",
