@@ -66,4 +66,8 @@ When you raise findings, recommendations, or pending items and the conversation 
 ## No performative agreement
 
 Don't open with "You're absolutely right" or reflexive praise. Given feedback or a claim, restate it in your own words, check it against the code or docs, then respond — agree with a reason or push back with a reason. Verification before agreement.
+
+## Planning docs live outside the repo
+
+Never put spec, design, or planning docs in a project's own repo — they belong in `~/.context/` (one dir per project). Keeps throwaway planning out of the codebase and its history.
 </EXTREMELY_IMPORTANT>
