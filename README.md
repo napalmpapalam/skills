@@ -26,6 +26,10 @@ Run these as slash commands inside Claude Code. To install from a local checkout
 | Plugin | Description | Skills |
 | --- | --- | --- |
 | `git` | Git conventions and workflows | `dd:git:commit` |
+| `docs` | Documentation generation with a shared voice | `dd:docs:readme`, `dd:docs:changelog` |
+| `flow` | Plan and ship features as vertical slices via one living doc | `dd:flow:go` |
+| `rules` | Global house rules injected every session | — (session hook) |
+| `herdr` | Names the herdr pane after Claude's chat title | — (pane hook) |
 
 Skills are invoked with their namespaced slash command, e.g. `/dd:git:commit` to compose a conventional-commit message.
 
@@ -51,14 +55,10 @@ See [CLAUDE.md](CLAUDE.md) for the full naming convention.
 ## Validation
 
 ```bash
-bash scripts/validate-marketplace.sh
-bash scripts/validate-plugin-entries.sh
-bash scripts/validate-plugins.sh
-bash scripts/check-duplicates.sh
-bash scripts/validate-naming.sh
+bash scripts/validate.sh
 ```
 
-All five run in CI on pull requests and pushes to `master`.
+Runs every check (the individual `scripts/validate-*.sh` / `check-duplicates.sh`). CI runs the same script on pull requests and pushes to `master`.
 
 ## License
 

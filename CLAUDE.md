@@ -36,14 +36,11 @@ Result: `plugins/git/skills/commit/SKILL.md` → `/dd:git:commit`. Enforced by `
 1. Create `plugins/<domain>/.claude-plugin/plugin.json` with `name` = `dd:<domain>` (e.g. `dd:git`).
 2. Add components at the plugin root: `skills/<skill-dir>/SKILL.md` (with `name: dd:<domain>:<skill-dir>`), `commands/*.md`, `agents/*.md`, etc.
 3. Register the plugin in the `plugins` array in `.claude-plugin/marketplace.json` with a **kebab-case** `name` (e.g. `git`, matching the `dd:` suffix), `source` (e.g. `./plugins/<domain>`), and `description`.
-4. Run the validation scripts locally before pushing:
+4. Run the validation suite locally before pushing:
    ```
-   bash scripts/validate-marketplace.sh
-   bash scripts/validate-plugin-entries.sh
-   bash scripts/validate-plugins.sh
-   bash scripts/check-duplicates.sh
-   bash scripts/validate-naming.sh
+   bash scripts/validate.sh
    ```
+   (runs all the individual `scripts/validate-*.sh` / `check-duplicates.sh` checks; CI runs the same script)
 
 ## Hooks
 
