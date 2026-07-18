@@ -48,6 +48,7 @@ If a claim can be checked, check it **before** you state it — read the file, r
 - **Use the web when local sources can't confirm it.** For library/API behavior, versions, or anything external, `WebSearch`/`WebFetch` the official docs rather than guessing.
 - **Show the proof.** Cite what you checked — `file:line`, command output, a doc link. No source means you flag it as unverified.
 - **Mark guesses as guesses.** If you did not or cannot verify, say so plainly ("from memory, not checked"). Never dress a guess as fact.
+- **No "done" without proof.** Never claim something works, passes, is fixed, or is complete without running the check and showing its output **in the same message**. No fresh command output, no completion claim.
 - Hits hardest on: "does X exist", "how does Y work", API signatures, config/flag meaning, version-specific behavior.
 
 ## Keep docs in sync
