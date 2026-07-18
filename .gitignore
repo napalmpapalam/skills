@@ -1,0 +1,17 @@
+# Agent runtime
+.claude/cache/
+.claude/logs/
+.claude/temp/
+.claude/settings.local.json
+
+# OS Files
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
