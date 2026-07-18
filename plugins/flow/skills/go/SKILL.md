@@ -77,6 +77,8 @@ Turn the framed scope into vertical slices:
 
 Build the current slice end to end. Keep the change minimal and within the PR-size budget. If it's growing past ~1k lines, stop and re-slice — tell the user it needs splitting rather than shipping an unreviewable PR.
 
+For logic-heavy slices (clear inputs/outputs — parsers, calculations, rules), drive it with a failing test first. For scaffold, wiring, and config slices, skip it — there's nothing to red-test.
+
 ### Step 4 — Close the slice
 
 When the slice is built, wrap it up so it's ready for the user's review. Reviewing, committing, and clearing the chat are the user's to do — don't do them for the user or tell the user to do them.
