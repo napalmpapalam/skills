@@ -23,6 +23,14 @@
       }
     },
     {
+      "name": "rules",
+      "source": "./plugins/rules",
+      "description": "Global house rules injected into every session via a SessionStart hook",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    },
+    {
       "name": "herdr",
       "source": "./plugins/herdr",
       "description": "Herdr integration — names the herdr pane after Claude's chat title",
