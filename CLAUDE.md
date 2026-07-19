@@ -36,11 +36,18 @@ Result: `plugins/git/skills/commit/SKILL.md` → `/dd:git:commit`. Enforced by `
 1. Create `plugins/<domain>/.claude-plugin/plugin.json` with `name` = `dd:<domain>` (e.g. `dd:git`).
 2. Add components at the plugin root: `skills/<skill-dir>/SKILL.md` (with `name: dd:<domain>:<skill-dir>`), `commands/*.md`, `agents/*.md`, etc.
 3. Register the plugin in the `plugins` array in `.claude-plugin/marketplace.json` with a **kebab-case** `name` (e.g. `git`, matching the `dd:` suffix), `source` (e.g. `./plugins/<domain>`), and `description`.
-4. Run the validation suite locally before pushing:
+4. List every skill in the plugin's `README.md` by its command (`` /dd:<domain>:<skill-dir> ``). Enforced by `scripts/validate-readme-skills.sh`.
+5. Run the validation suite locally before pushing:
    ```
    bash scripts/validate.sh
    ```
    (runs all the individual `scripts/validate-*.sh` / `check-duplicates.sh` checks; CI runs the same script)
+
+## Editing an installed plugin — bump the version
+
+Installed plugins run from a **version-keyed cache** (`~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`), not the repo. If you change a plugin's files (skill body, hook script, README) **without bumping `version` in its `.claude-plugin/plugin.json`**, `/plugin` update reports *"already at latest version"* and **skips the re-sync** — your edits never take effect.
+
+**So: any change to a plugin's files must bump that plugin's `version`** (e.g. `0.1.0` → `0.1.1`) in the same commit. Then the user runs `/plugin` update + `/reload-plugins`. Enforced by `scripts/validate-versions.sh` (compares the working tree against `origin/master`). Alternative to a bump: uninstall + reinstall forces a re-copy.
 
 ## Hooks
 

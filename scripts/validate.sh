@@ -9,7 +9,9 @@ for s in \
   validate-plugin-entries.sh \
   validate-plugins.sh \
   check-duplicates.sh \
-  validate-naming.sh
+  validate-naming.sh \
+  validate-readme-skills.sh \
+  validate-versions.sh
 do
   echo "▶ scripts/$s"
   bash "scripts/$s"
