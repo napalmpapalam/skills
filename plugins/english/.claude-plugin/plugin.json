@@ -1,0 +1,8 @@
+{
+  "name": "dd:english",
+  "version": "0.1.0",
+  "description": "Brief English-grammar coaching on every prompt via a UserPromptSubmit hook",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}

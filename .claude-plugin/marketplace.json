@@ -53,6 +53,14 @@
       "author": {
         "name": "Semen Loktionov"
       }
+    },
+    {
+      "name": "english",
+      "source": "./plugins/english",
+      "description": "Brief English-grammar coaching on every prompt via a UserPromptSubmit hook",
+      "author": {
+        "name": "Semen Loktionov"
+      }
     }
   ]
 }
