@@ -34,6 +34,7 @@ The marketplace also accepts a full git URL:
 | `docs` | Documentation generation with a shared voice | `dd:docs:readme`, `dd:docs:changelog` |
 | `flow` | Plan and ship features as vertical slices via one living doc | `dd:flow:go` |
 | `rust` | Rust conventions plus a `/dd:rust:review` command | `dd:rust:async`, `dd:rust:code-structure`, `dd:rust:comments`, `dd:rust:error-handling`, `dd:rust:linting`, `dd:rust:ownership`, `dd:rust:performance`, `dd:rust:serde`, `dd:rust:testing`, `dd:rust:type-system`, `dd:rust:review` |
+| `ts` | TypeScript library conventions plus a `/dd:ts:review` command | `dd:ts:async`, `dd:ts:classes`, `dd:ts:code-structure`, `dd:ts:code-style`, `dd:ts:comments`, `dd:ts:error-handling`, `dd:ts:testing`, `dd:ts:tooling`, `dd:ts:type-system`, `dd:ts:review` |
 | `rules` | Global house rules injected every session | — (session hook) |
 | `herdr` | Names the herdr pane after Claude's chat title | — (pane hook) |
 | `english` | Brief English-grammar coaching on every prompt | — (prompt hook) |

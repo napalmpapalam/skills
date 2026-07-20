@@ -1,0 +1,8 @@
+{
+  "name": "dd:ts",
+  "version": "0.1.0",
+  "description": "TypeScript conventions for framework-agnostic libraries",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}

@@ -55,6 +55,14 @@
       }
     },
     {
+      "name": "ts",
+      "source": "./plugins/ts",
+      "description": "TypeScript conventions for framework-agnostic libraries — auto-triggered convention skills plus a /dd:ts:review command",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    },
+    {
       "name": "english",
       "source": "./plugins/english",
       "description": "Brief English-grammar coaching on every prompt via a UserPromptSubmit hook",
