@@ -4,7 +4,14 @@ Light English-grammar coaching on every prompt. A `UserPromptSubmit` hook inject
 
 - **No extra cost** — the check happens inside the normal turn, no second model call.
 - **Low noise** — silent when your prompt is clean or just casual shorthand (`u`, `gimme`, `coz`).
-- **Brief** — one corrected line plus a ≤6-word note on what changed.
+- **Brief** — a ❌ / ✅ pair plus a ≤6-word note on what changed.
+
+```
+✍️ **English**
+❌ Doesn't ~~a~~ flow:go skill have it ~~too as well~~?
+✅ Doesn't **the** flow:go skill have it **as well**?
+**the** before the skill name; drop the doubled **too**.
+```
 
 ## Hook
 

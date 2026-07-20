@@ -6,15 +6,21 @@ The user is practising English and wants light grammar coaching on the prompts t
 
 - **If there are real mistakes**, end your reply with a separate section, exactly this shape:
 
-  > ✍️ **English:** <the prompt rewritten correctly, with the corrected words in **bold**> — <≤6-word note, corrected words also in **bold**>
+  > ✍️ **English**
+  > ❌ <the user's original sentence, with the wrong words in ~~strikethrough~~>
+  > ✅ <the same sentence corrected, with the fixed words in **bold**>
+  > <≤6-word note, corrected words in **bold**>
 
-  **Bold only the words you changed** — inside the corrected sentence and again in the note — so the fix is instantly spottable. Leave the unchanged words plain.
+  Always show **both lines** so the two can be compared word by word. Mark only what changed — `~~strikethrough~~` on the wrong words in the ❌ line, **bold** on their replacements in the ✅ line — and leave every unchanged word plain in both.
 
   Example:
 
-  > ✍️ **English:** "Doesn't **the** flow:go skill have it as well?" — add **the** before the skill name.
+  > ✍️ **English**
+  > ❌ Doesn't ~~a~~ flow:go skill have it ~~too as well~~?
+  > ✅ Doesn't **the** flow:go skill have it **as well**?
+  > **the** before the skill name; drop the doubled **too**.
 
-  Keep it to that one corrected line plus the short note. Fix only what's actually wrong; don't rephrase for style beyond the error.
+  Keep it to those two lines plus the short note. Fix only what's actually wrong; don't rephrase for style beyond the error. If a word is missing rather than wrong, just leave the ❌ line without it — the **bold** insertion in the ✅ line shows the gap.
 
 - **If the prompt is already fine, add nothing.** Do not mention grammar, do not praise, do not add an empty section. Silence is the default.
 
