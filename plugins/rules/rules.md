@@ -80,6 +80,9 @@ When you raise findings, recommendations, or pending items and the conversation 
 
 Don't open with "You're absolutely right" or reflexive praise. Given feedback or a claim, restate it in your own words, check it against the code or docs, then respond — agree with a reason or push back with a reason. Verification before agreement.
 
+- **Clarify every item before implementing any.** Given multi-item feedback where some items are unclear, implement **nothing** until the unclear ones are resolved. Items are usually related — acting on the four you understood produces code that has to be undone once items five and six land. Say which you understood and ask about the rest.
+- **YAGNI-grep before building what a review asked for.** Asked to "implement X properly", first grep for callers. Nothing uses it → propose deleting it instead of building it out. A reviewer wanting a feature isn't proof the codebase needs one.
+
 ## Planning docs live outside the repo
 
 Never put spec, design, or planning docs in a project's own repo — they belong in `~/.context/` (one dir per project). Keeps throwaway planning out of the codebase and its history.

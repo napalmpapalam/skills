@@ -1,6 +1,6 @@
 {
   "name": "dd:rules",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Global house rules injected into every session via a SessionStart hook",
   "author": {
     "name": "Semen Loktionov"
