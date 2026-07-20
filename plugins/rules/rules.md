@@ -64,6 +64,7 @@ If the last three turns have been "still broken", **stop editing code**. More at
 - Name the assumption that might be wrong — the thing everyone has taken for granted since the bug appeared.
 - Ask **one** diagnostic question, or run one command that would prove that assumption false.
 - Say plainly that you're stepping back and why. Don't quietly try a fourth variation of the same fix.
+- **After a dead end, reset.** Once an approach is abandoned, its failed reasoning shouldn't ride along steering the next attempt. Write down what was learned (what was tried, why it failed), then suggest the user `/clear` and restart from that note.
 
 ## Keep docs in sync
 
@@ -82,6 +83,17 @@ Don't open with "You're absolutely right" or reflexive praise. Given feedback or
 
 - **Clarify every item before implementing any.** Given multi-item feedback where some items are unclear, implement **nothing** until the unclear ones are resolved. Items are usually related — acting on the four you understood produces code that has to be undone once items five and six land. Say which you understood and ask about the rest.
 - **YAGNI-grep before building what a review asked for.** Asked to "implement X properly", first grep for callers. Nothing uses it → propose deleting it instead of building it out. A reviewer wanting a feature isn't proof the codebase needs one.
+
+## Reach for the skill that covers it
+
+Before starting work that a `dd:` skill already codifies, invoke that skill instead of improvising. These encode settled method — improvising re-derives it worse, and inconsistently.
+
+- **Building a feature, or asked "how should I build X"** — `dd:flow:go` **before writing code**, not after. Covers framing, slicing, the living doc in `~/.context/`, and the close-slice ritual. This holds even when the work looks small enough to skip planning; that's exactly where unexamined assumptions cost the most.
+- **Writing a commit message** — `dd:git:commit`. **Opening a PR/MR** — `dd:git:pr`.
+- **Writing Rust** — the matching `dd:rust:*` skill for the area you're in (error handling, testing, async, naming, comments…).
+- **Writing or updating a README or CHANGELOG** — `dd:docs:*`.
+
+If you're unsure whether one applies, check its description rather than guessing. The cost of loading a skill you didn't need is small; the cost of shipping work that ignores the method is not.
 
 ## Planning docs live outside the repo
 
