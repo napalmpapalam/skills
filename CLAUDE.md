@@ -47,7 +47,11 @@ Result: `plugins/git/skills/commit/SKILL.md` → `/dd:git:commit`. Enforced by `
 
 Installed plugins run from a **version-keyed cache** (`~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`), not the repo. If you change a plugin's files (skill body, hook script, README) **without bumping `version` in its `.claude-plugin/plugin.json`**, `/plugin` update reports *"already at latest version"* and **skips the re-sync** — your edits never take effect.
 
-**So: any change to a plugin's files must bump that plugin's `version`** (e.g. `0.1.0` → `0.1.1`) in the same commit. Then the user runs `/plugin` update + `/reload-plugins`. Enforced by `scripts/validate-versions.sh` (compares the working tree against `origin/master`). Alternative to a bump: uninstall + reinstall forces a re-copy.
+**So: a commit that touches a plugin's files must bump that plugin's `version`** (e.g. `0.1.0` → `0.1.1`).
+
+**One bump per commit, not per edit.** The gate compares the working tree against `origin/master`, so what matters is that the version differs from the published one — not how many edits got there. While a change is still uncommitted, keep editing at the bumped number; bump again only after the previous one is committed. Burning a version per edit wastes numbers and can push the local cache ahead of the repo, which then silently skips the re-sync.
+
+Then the user runs `/plugin` update + `/reload-plugins`. Enforced by `scripts/validate-versions.sh` (compares the working tree against `origin/master`). Alternative to a bump: uninstall + reinstall forces a re-copy.
 
 ## Hooks
 
