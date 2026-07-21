@@ -2,7 +2,7 @@
 name: dd:flow:go
 description: Plan and ship a feature as vertical slices driven by one living doc, one slice ("go") at a time. Use when the user starts a new feature or project, asks how to build or approach something, wants to break scope into tasks or slices, says "let's plan this", "how should I build X", "do a go", "next slice", "what do I do next", or wants to update/continue from a feature context doc. Also use to run the close-slice ritual after finishing a piece of work.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion
-version: 0.1.0
+version: 0.1.2
 effort: medium
 ---
 
@@ -17,7 +17,7 @@ The method is depth-first and just-in-time: build one complete, working layer at
 - **Every slice compiles and runs.** A slice is a complete thin path through all the layers it touches — never a horizontal spec fragment. After each slice the project is green: it builds, runs, and the new behavior works.
 - **A slice is one reviewable PR.** Target **≤1000 lines changed**, hard cap **1500**, lock files excluded. A big feature is several slices, each mergeable on its own, so cross-review stays sane.
 - **No dead code.** Build only what this slice needs. No config, interface, or scaffold for a future slice that hasn't arrived. If it isn't used now, it isn't in scope.
-- **One slice per session.** After a slice lands, the user runs `/clear` and starts the next one fresh from the doc. Don't try to do two slices in one go.
+- **One slice per session.** Planning and building are separate sessions too — a new doc is handed over, not built on (Step 2.5). After a slice lands, the user runs `/clear` and starts the next one fresh from the doc. Don't try to do two slices in one go.
 - **What before how.** The user often knows the end state, not the path. Settle *how the slice will work* before writing code (see Step 1).
 
 ## The living doc
@@ -32,6 +32,8 @@ Structure:
 
 ```markdown
 # <feature name>
+
+> **This doc drives the `/dd:flow:go` flow. If you're reading it to do work, invoke that skill first — it holds the method this doc assumes.**
 
 ## Destination
 What "done" looks like — the end state, in a few lines. Re-read every session.
@@ -55,6 +57,8 @@ Loose notes for things that can't be phrased as a sharp task yet (fog of war).
 Explicitly not doing.
 ```
 
+Working from an older doc that has no banner? Add it — one line, no other edits.
+
 ## Flow
 
 ### Step 1 — Frame (before any code)
@@ -76,6 +80,35 @@ Turn the framed scope into vertical slices:
 - Order by frontier: the next slice is one whose blockers are all done.
 - Write the slice list into the doc's **## Slices** (checklist). Sharp ones only; vague ones go to **## Not yet specified**.
 
+### Step 2.5 — Hand over the doc (new doc only)
+
+**When the doc is created for the first time, stop here. Do not start building in this session.**
+
+Framing is exploration-heavy — rejected proposals, refuted guesses, dead ends. Building on top of that context means the doc never gets used as what it is: the seed a fresh session reads. Handing over tests the seed while it's still cheap to fix.
+
+1. **Re-read the doc with fresh eyes** — the same check as Step 4.3 (placeholders, contradictions, ambiguity, stale scope). Fix what's broken inline.
+2. **Print the TL;DR** (below) so the user can judge the plan without opening the file.
+3. **Hand over.** Say the doc is ready and give the seed block (below). The user `/clear`s and re-enters this skill to build. Don't run the clear for the user, and don't start Step 3.
+
+If the doc already exists (a continuing session), skip this step — go straight to Step 3.
+
+**The TL;DR.** The user should get the **whole picture in one scan** — never have to open the file to know what was decided and what's about to be built. So it covers everything the doc covers; what gets cut is the prose, not the items.
+
+- **Destination** — one line.
+- **Decisions** — every settled one, one line each. This is the core: it's what the user is really reviewing.
+- **Gotchas** — corner cases, constraints, and surprises found while framing. One line each; these are what a reader would otherwise miss.
+- **Slices** — the checklist, one line each, next-takeable one marked.
+- **Needs your call** — anything still open or assumed. Empty is a valid answer; say so.
+
+Cut: rationale, the path you took to a decision, pointers and `file:line` refs, verification output, alternatives you rejected. Keep the *what*, drop the *how you got there* — the doc holds that for the next session.
+
+**The seed block.** The user copy-pastes this straight into the fresh chat, so it has to stand alone there — one line is the floor, not a cap. Include:
+
+- **The seed line** — `/dd:flow:go` + `<doc path>` + which slice. Always, and always with the command: pasted text alone won't pull this skill in, and a fresh session without it builds off-method. The doc's header banner is the backstop for docs opened some other way, not a substitute — it only fires once the file is already open.
+- **Live session state the doc can't hold** — running port-forwards and their ports, a started service, a temp file, an open tunnel, a chosen kube context. Say whether it survives a `/clear`, and where the restart command lives if it doesn't. This is the part that saves the next session real time; a doc records the plan, not what's running right now.
+
+Keep it to those. Anything a fresh session can find by reading the doc doesn't belong in the block.
+
 ### Step 3 — Build one slice
 
 Build the current slice end to end. Keep the change minimal and within the PR-size budget. If it's growing past ~1k lines, stop and re-slice — tell the user it needs splitting rather than shipping an unreviewable PR.
@@ -93,7 +126,7 @@ When the slice is built, wrap it up so it's ready for the user's review. Reviewi
    - **Contradictions** — does a new Decision cut against an older one, or against Destination?
    - **Ambiguity** — could a line be read two ways? Pick one and say it outright.
    - **Stale scope** — do the remaining slices still match what the last one taught you?
-4. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **one-line seed** (which doc + which slice) ready for when the user wants to continue — offer it, don't direct.
+4. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **seed block** (Step 2.5) ready for when the user wants to continue — offer it, don't direct.
 
 ## Starting a feature from scratch
 

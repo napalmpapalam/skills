@@ -1,6 +1,6 @@
 {
   "name": "dd:flow",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Plan and ship features as vertical slices through one living doc",
   "author": {
     "name": "Semen Loktionov"
