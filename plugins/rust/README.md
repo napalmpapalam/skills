@@ -1,6 +1,6 @@
 # rust
 
-Rust conventions and best practices. Nine convention skills auto-trigger while you write Rust; a tenth is an explicit review command. A `PreToolUse` hook nudges Claude toward the conventions whenever it edits a `.rs` file.
+Rust conventions and best practices. Nine convention skills auto-trigger while you write Rust; a tenth is an explicit review command. Two hooks nudge Claude toward the conventions: a `SessionStart` hook when the project is Rust, and a `PreToolUse` hook whenever it edits a `.rs` file.
 
 ## Skills
 
@@ -21,6 +21,9 @@ Command-only (`disable-model-invocation`):
 
 - `/dd:rust:review` — run cargo checks, load every convention skill, review the diff, emit a structured report.
 
-## Hook
+## Hooks
 
-`PreToolUse` on `Write|Edit`: when the target file ends in `.rs`, injects a one-line reminder to apply the `dd:rust:*` conventions. Emits only a `systemMessage` — it never auto-approves the edit.
+- `SessionStart` (`startup|clear|compact`): when the session opens in a Rust project (a `Cargo.toml` in cwd or any ancestor), injects a one-line note that the `dd:rust:*` conventions govern all Rust — including reasoning about hypothetical changes, not just edits.
+- `PreToolUse` on `Write|Edit`: when the target file ends in `.rs`, injects a one-line reminder to apply the `dd:rust:*` conventions.
+
+Both emit only a `systemMessage` — they never auto-approve anything.
