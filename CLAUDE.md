@@ -68,3 +68,13 @@ A plugin's `hooks/hooks.json` must wrap the event map under a top-level `"hooks"
 ```
 
 Reference scripts with `${CLAUDE_PLUGIN_ROOT}` (not absolute paths). It's an **environment variable**, so wrap it in **double** quotes — single quotes pass it to the shell literally and the path won't resolve. Verify with `claude plugin details <plugin>@<marketplace>` — it should report the expected `Hooks (N)`.
+
+### Reaching the model vs. the user
+
+A hook that wants to **tell the model something** must pick an event that injects context. `systemMessage` never does — [the reference](https://code.claude.com/docs/en/hooks) defines it as a *"Warning message shown to the user"*, so a hook emitting only `{"systemMessage":"…"}` is invisible to Claude. It looks like it works, because the text shows up in the transcript.
+
+- **`SessionStart` / `UserPromptSubmit`** — plain **stdout** is added as context the model reads. Just `cat` or `echo` the text; no JSON needed.
+- **`PostToolUse` / `Stop` / `SubagentStop`** — use `hookSpecificOutput.additionalContext`.
+- **`PreToolUse`** — supports *neither*. It only has `permissionDecision` / `permissionDecisionReason` / `updatedInput`. A `PreToolUse` hook **cannot** pass a note to the model without also gating the tool call, so put per-turn reminders on `UserPromptSubmit` instead.
+
+Corollary: a rule injected once at `SessionStart` gets buried by the transcript in a long session. If it must hold on turn 80, re-inject it on `UserPromptSubmit` and keep it to a few lines — it costs tokens on every prompt.
