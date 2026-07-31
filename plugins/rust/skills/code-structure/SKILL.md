@@ -21,7 +21,37 @@ description: Rust project structure, code style, visibility, function design, an
 - Module names are `snake_case` — match the file name exactly
 
 ## Code style
-- **No `match` when combinators work** — prefer `.map()`, `.and_then()`, `.unwrap_or()`, `?` over match blocks
+- **No `match` when combinators work** — prefer `.map()`, `.and_then()`, `.unwrap_or()`, `?` over match blocks. A `match` whose arms only log and return the same value is the most common offender: `.inspect_err()` logs the error, `.ok()?` drops it, `.or_else()` logs the empty case. If the function returns `()` and `?` is unavailable, use `let ... else` — not a `match`.
+
+```rust
+// Nested — three arms, two of them just log
+match ctx.upstream.pick_snark().await {
+    Ok(Some(payload)) => Some(payload),
+    Ok(None) => {
+        tracing::debug!("no SNARK job upstream");
+        None
+    }
+    Err(err) => {
+        tracing::warn!(error = %format_args!("{err:#}"), "failed to collect a SNARK job");
+        None
+    }
+}
+
+// Flat — same three cases, no nesting
+ctx.upstream
+    .pick_snark()
+    .await
+    .inspect_err(|err| {
+        tracing::warn!(error = %format_args!("{err:#}"), "failed to collect a SNARK job");
+    })
+    .ok()?
+    .or_else(|| {
+        tracing::debug!("no SNARK job upstream");
+        None
+    })
+```
+
+Keep the `match` when arms do real work, bind different variables, or the compiler's exhaustiveness check is the point (matching a state enum).
 - **Functional over imperative** — prefer `.filter()`, `.map()`, `.fold()` over `for` loops
 - **Flat over nested** — invert conditions with early `return`/`continue`/`break` (guard clauses). Less nesting = easier to read
 - **Avoid `else`** — almost never needed. Use early `return`/`continue` instead. `else` adds nesting and cognitive load. Rare exceptions are fine, but default to no `else`
