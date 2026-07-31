@@ -7,10 +7,19 @@ description: Rust comment and doc-comment style — keep them concise, explain w
 
 Default to **less**. Well-named code beats a comment. But note: this workspace sets `missing_docs = "warn"` and CI runs rustdoc with `-D warnings`, so **every public item must keep a doc comment** — make it concise, never delete it.
 
+## Budget
+
+The failure to avoid is the **comment poem**: a prose block at the top of a file or above a function, explaining the design to nobody.
+
+- `//!` module header — **1 line**. `///` item doc — **1 line**. `//` inline — **1–3 lines**.
+- **Never write a comment longer than the code it describes.**
+- **Obvious → omit.** `/// Returns the config.` on `fn config()` is noise. A public item still needs one line, so make it say what the name doesn't.
+
 ## Doc comments (`///`)
 
 - **One line by default** — say *what it is* / *what it returns*, not how it works. The signature already shows the types; don't restate them.
 - Add a second paragraph **only** for a non-obvious invariant, precondition, or rationale that a reader genuinely needs. If it's obvious from the name, cut it.
+- Struct fields get a short line each, not a paragraph.
 - **No `# Arguments` / `# Returns` sections** that just restate the signature. Keep `# Errors` / `# Panics` / `# Safety` only when the behavior is non-obvious.
 - Don't narrate cross-module architecture in an item's doc — that belongs in a design doc, not the code.
 
@@ -29,6 +38,7 @@ type BoxError = Box<dyn StdError + Send + Sync + 'static>;
 
 - **One line: what the module is.** No architecture essays, no cross-module design narration, no seam-by-seam walkthroughs.
 - If the design rationale is worth recording, it lives in a design doc (`~/.context/` or `docs/`), not the file head.
+- A thin module the name already explains (a CLI subcommand, a re-exporting `mod.rs`) can skip the header.
 
 ```rust
 // Too much — a 9-line design essay at the top of every file

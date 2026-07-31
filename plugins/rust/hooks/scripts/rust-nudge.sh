@@ -1,22 +1,21 @@
 #!/bin/sh
-# PreToolUse (Write|Edit) nudge: when the edited file is Rust, remind the model
-# to apply the dd:rust:* convention skills. Emits only `systemMessage` — no
-# permissionDecision — so it never auto-approves the write, just adds context.
+# UserPromptSubmit: in a Rust project, re-inject a one-line reminder every turn.
+#
+# This used to be a PreToolUse (Write|Edit) hook emitting {"systemMessage":...}.
+# Two things were wrong with that: systemMessage is only shown to the user, so
+# the model never saw it; and PreToolUse cannot return additionalContext at all
+# (per the hooks reference, only PostToolUse/Stop/SubagentStop can). UserPrompt-
+# Submit stdout IS added as context, and firing per-turn also covers questions
+# about Rust, not just edits.
 
-input=$(cat)
-
-# Pull tool_input.file_path out of the hook's stdin JSON. jq if available,
-# else a portable sed fallback.
-if command -v jq >/dev/null 2>&1; then
-  path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
-else
-  path=$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
-fi
-
-case "$path" in
-  *.rs)
-    printf '{"systemMessage":"Editing Rust (%s) — apply the dd:rust:* conventions (error-handling, ownership, async, type-system, code-structure, comments: keep comments/doc-comments concise). Load the relevant skill if unsure."}' "$path"
-    ;;
-esac
+dir=$PWD
+while [ -n "$dir" ]; do
+  if [ -f "$dir/Cargo.toml" ]; then
+    echo "Rust project: before writing Rust or answering about it, load the matching dd:rust:* skill (error-handling, ownership, async, type-system, code-structure, testing, comments)."
+    break
+  fi
+  [ "$dir" = "/" ] && break
+  dir=$(dirname "$dir")
+done
 
 exit 0

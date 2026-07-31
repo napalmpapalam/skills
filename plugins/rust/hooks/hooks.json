@@ -12,9 +12,8 @@
         ]
       }
     ],
-    "PreToolUse": [
+    "UserPromptSubmit": [
       {
-        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
