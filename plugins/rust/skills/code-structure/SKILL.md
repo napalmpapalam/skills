@@ -55,6 +55,24 @@ Keep the `match` when arms do real work, bind different variables, or the compil
 - **Functional over imperative** — prefer `.filter()`, `.map()`, `.fold()` over `for` loops
 - **Flat over nested** — invert conditions with early `return`/`continue`/`break` (guard clauses). Less nesting = easier to read
 - **Avoid `else`** — almost never needed. Use early `return`/`continue` instead. `else` adds nesting and cognitive load. Rare exceptions are fine, but default to no `else`
+- **One `use` per crate** — merge everything from the same crate into a single braced import, then group `std` / external / local with a blank line between. Stable `rustfmt` cannot do this (`imports_granularity` is nightly-only), so write it merged by hand and keep it that way when adding an import.
+
+```rust
+// Scattered — four lines, two crates
+use std::future::Future;
+use std::sync::Arc;
+use jobs::SnarkRun;
+use jobs::dto::SnarkJobPayload;
+
+// Merged — one use per crate, grouped std / external / local
+use std::{future::Future, sync::Arc};
+
+use jobs::{SnarkRun, dto::SnarkJobPayload};
+use tokio_util::sync::CancellationToken;
+
+use crate::context::Context;
+```
+
 - **Short functions** — extract into smaller fns even if used once. Reduce cognitive load
 - **Max 3-4 function arguments** — group into a config/params struct. Never `#[allow(clippy::too_many_arguments)]`
 
