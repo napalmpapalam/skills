@@ -2,6 +2,11 @@
 
 Global house rules injected into every session.
 
-A `SessionStart` hook cats `rules.md` into the context of each session where the plugin is installed — no skill or command to invoke, the rules are just always active.
+Two hooks, no skill or command to invoke — the rules are just always active:
 
-Add rules by editing `rules.md`.
+| Hook | File | Why |
+| --- | --- | --- |
+| `SessionStart` | `rules.md` | The full rule set, once per session. |
+| `UserPromptSubmit` | `brevity.md` | A short length check, re-injected every turn — a one-shot `SessionStart` rule gets buried by the transcript in a long session. |
+
+Add rules by editing `rules.md`. Keep `brevity.md` under ~10 lines; it costs tokens on every prompt.
