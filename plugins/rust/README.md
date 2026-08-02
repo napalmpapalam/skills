@@ -24,7 +24,9 @@ Command-only (`disable-model-invocation`):
 ## Hooks
 
 - `SessionStart` (`startup|clear|compact`): when the session opens in a Rust project (a `Cargo.toml` in cwd or any ancestor), injects a one-line note that the `dd:rust:*` conventions govern all Rust — including reasoning about hypothetical changes, not just edits.
-- `UserPromptSubmit`: in a Rust project, re-injects a one-line reminder to load the matching `dd:rust:*` skill — every turn, so it still holds late in a long session.
+- `UserPromptSubmit`: in a Rust project, tells the model that no `dd:rust:*` skill is loaded and it must call one. It greps the live transcript (`transcript_path`, a common hook input) for a real `Skill` call and **goes silent once one lands** — so it costs nothing for the rest of the session.
+
+  The message states the fact rather than making a request: the skill bodies are not in context until `Skill` is called, so the model does *not* know these conventions. An earlier version politely asked to "load the matching skill" and was ignored 20 times in one session while 18 `.rs` files were edited.
 
 Both write plain stdout, which `SessionStart` and `UserPromptSubmit` add as context the model reads. They never gate or auto-approve a tool call.
 
