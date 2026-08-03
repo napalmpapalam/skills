@@ -1,21 +1,19 @@
 # rust
 
-Rust conventions and best practices. Nine convention skills auto-trigger while you write Rust; a tenth is an explicit review command. Two hooks nudge Claude toward the conventions, both gated on the project being Rust: a `SessionStart` hook, and a `UserPromptSubmit` hook that re-injects the reminder every turn.
+Rust conventions and best practices. Six convention skills auto-trigger while you write Rust; a seventh is an explicit review command. Two hooks nudge Claude toward the conventions, both gated on the project being Rust: a `SessionStart` hook, and a `UserPromptSubmit` hook that re-injects the reminder every turn.
 
 ## Skills
 
 Auto-triggered (loaded on demand when the task matches):
 
-- `dd:rust:async` — tokio runtime, concurrency, channels, async pitfalls.
-- `dd:rust:code-structure` — project layout, modules, visibility, function design, naming.
+- `dd:rust:core` — the default: types, error handling, ownership, async, module layout, code style, naming.
 - `dd:rust:comments` — concise comments and doc comments, short module headers.
-- `dd:rust:error-handling` — Result/? patterns, thiserror vs anyhow, error chains.
 - `dd:rust:linting` — workspace lints, clippy enforcement, formatting.
-- `dd:rust:ownership` — borrowing, lifetimes, smart pointers, Cow.
 - `dd:rust:performance` — iterators, release profiles, inlining, allocation profiling.
 - `dd:rust:serde` — derive patterns, snake_case defaults, enum representations, zero-copy.
 - `dd:rust:testing` — unit/integration layout, mocking, property/snapshot testing.
-- `dd:rust:type-system` — newtypes, enums, generics, parse-don't-validate.
+
+`core` carries what applies to almost every Rust edit; the other five are conditional and stack on top. It was merged out of five skills (`async`, `code-structure`, `error-handling`, `ownership`, `type-system`) because the nudge hook goes quiet after the *first* skill loads — so that one skill has to be the one that covers the edit. Five 20-line skills meant a session could load `async`, fall silent, and write a whole new module with no layout, naming, or error rules in context.
 
 Command-only (`disable-model-invocation`):
 

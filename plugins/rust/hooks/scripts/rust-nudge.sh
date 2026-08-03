@@ -37,6 +37,6 @@ if [ -n "$transcript" ] && grep -q '"skill":"dd:rust:' "$transcript" 2>/dev/null
   exit 0
 fi
 
-echo "No dd:rust:* skill has been loaded this session, so the Rust conventions are NOT in your context — you do not know them, and your defaults are not them. Call Skill(dd:rust:<area>) before the next Rust edit or answer about Rust: comments, code-structure, error-handling, ownership, async, type-system, testing, serde, performance, linting."
+echo "No dd:rust:* skill has been loaded this session, so the Rust conventions are NOT in your context — you do not know them, and your defaults are not them. Call Skill(dd:rust:core) before the next Rust edit or answer about Rust — it carries types, error handling, ownership, async, module layout, style, and naming. Stack a topic skill on top when the task calls for it: comments, testing, serde, performance, linting."
 
 exit 0

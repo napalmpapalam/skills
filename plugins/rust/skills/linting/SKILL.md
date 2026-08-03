@@ -46,7 +46,7 @@ tab_spaces = 4
 
 - Use `#[rustfmt::skip]` only for generated code
 - Run `cargo fmt --all` before committing
-- **Don't add `imports_granularity` or `group_imports`.** Both are unstable — stable `rustfmt` ignores them and only prints `Warning: can't set ... unstable features are only available in nightly channel`, so they look configured while doing nothing. Import layout is a hand rule instead; see `dd:rust:code-structure`.
+- **Don't add `imports_granularity` or `group_imports`.** Both are unstable — stable `rustfmt` ignores them and only prints `Warning: can't set ... unstable features are only available in nightly channel`, so they look configured while doing nothing. Import layout is a hand rule instead; see `dd:rust:core`.
 
 ## CI checks
 

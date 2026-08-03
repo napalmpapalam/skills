@@ -31,16 +31,12 @@ git diff main...HEAD --name-only -- '*.rs' # for PRs
 
 Before reviewing, invoke each of these with the Skill tool to load the full criteria:
 
-1. `dd:rust:error-handling` — Result/? patterns, thiserror vs anyhow, error chains
-2. `dd:rust:ownership` — borrowing, lifetimes, smart pointers, Copy/Clone
-3. `dd:rust:async` — tokio runtime, concurrency, channels, async pitfalls
-4. `dd:rust:type-system` — newtypes, enums, generics, type safety
-5. `dd:rust:code-structure` — project layout, modules, visibility, naming
-6. `dd:rust:testing` — unit/integration tests, mocking, async tests
-7. `dd:rust:performance` — iterators, release profiles, inlining, bounds checks
-8. `dd:rust:linting` — workspace lints, clippy enforcement, formatting
-9. `dd:rust:serde` — serde attributes, snake_case defaults, enum representations
-10. `dd:rust:comments` — concise comments and doc comments, short module headers
+1. `dd:rust:core` — types, error handling, ownership, async, layout, style, naming
+2. `dd:rust:comments` — concise comments and doc comments, short module headers
+3. `dd:rust:testing` — unit/integration tests, mocking, async tests
+4. `dd:rust:performance` — iterators, release profiles, inlining, bounds checks
+5. `dd:rust:linting` — workspace lints, clippy enforcement, formatting
+6. `dd:rust:serde` — serde attributes, snake_case defaults, enum representations
 
 ## Step 4: Review changed files
 

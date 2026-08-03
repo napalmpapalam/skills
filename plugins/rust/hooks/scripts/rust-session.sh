@@ -13,8 +13,9 @@ while [ -n "$dir" ]; do
   if [ -f "$dir/Cargo.toml" ]; then
     cat <<'EOF'
 This is a Rust project — the dd:rust:* conventions govern all Rust you write AND
-any answer about what a Rust change would do (error-handling, ownership, async,
-type-system, code-structure, comments: keep comments and doc-comments concise).
+any answer about what a Rust change would do. dd:rust:core is the default (types,
+error handling, ownership, async, module layout, style, naming); comments, testing,
+serde, performance, and linting stack on top when the task calls for them.
 Load the relevant skill when reasoning about Rust, not only when editing.
 EOF
     break
