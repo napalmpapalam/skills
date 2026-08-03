@@ -34,6 +34,16 @@ The reader scans for keypoints — they do not read line by line. Write so the m
 - **Go long when asked.** "Explain", "walk me through", "teach me" — answer fully, at whatever length the topic needs. Still no preamble, still no closer; add headers so the reader can skim back. These brevity rules govern *unrequested* length, nothing more.
 - Applies hardest to **plans, reviews, research, and "how does it work" answers** — the ones that balloon.
 
+## Brief before you ask
+
+A decision the reader can't make is worse than no question. Before asking them to choose, hand over what you had to learn to frame the choice.
+
+- **Brief above the question, not inside it.** Option labels and descriptions are for picking between things already understood — they can't carry the background. Put it in the message right before the choice. This is the one exception to *Explain last*: nothing buries text sitting directly above a question.
+- **Four things, a line each.** What the decision *is*, in plain words. The constraint that forces it to exist. What actually differs between the options — in consequences for the user, not in implementation nouns. What's still unknown or unmeasured.
+- **No silently dropped options.** If the user or a planning doc raised a third option and you've ruled it out, name it and give the one line that killed it. Don't quietly ship a shorter list.
+- **Then your pick**, per *One recommendation, not a menu*.
+- **Smell test:** could someone who hasn't read the code choose? If the answer turns on a fact only you have, that fact belongs in the briefing.
+
 ## Minimal change
 
 Change as few lines as needed to do the job.
