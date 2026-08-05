@@ -1,19 +1,20 @@
 # rust
 
-Rust conventions and best practices. Six convention skills auto-trigger while you write Rust; a seventh is an explicit review command. Two hooks nudge Claude toward the conventions, both gated on the project being Rust: a `SessionStart` hook, and a `UserPromptSubmit` hook that re-injects the reminder every turn.
+Rust conventions and best practices. Five convention skills auto-trigger while you write Rust; a sixth is an explicit review command. Two hooks nudge Claude toward the conventions, both gated on the project being Rust: a `SessionStart` hook, and a `UserPromptSubmit` hook that re-injects the reminder every turn.
 
 ## Skills
 
 Auto-triggered (loaded on demand when the task matches):
 
-- `dd:rust:core` — the default: types, error handling, ownership, async, module layout, code style, naming.
-- `dd:rust:comments` — concise comments and doc comments, short module headers.
+- `dd:rust:core` — the default: types, error handling, ownership, async, module layout, comments, code style, naming.
 - `dd:rust:linting` — workspace lints, clippy enforcement, formatting.
 - `dd:rust:performance` — iterators, release profiles, inlining, allocation profiling.
 - `dd:rust:serde` — derive patterns, snake_case defaults, enum representations, zero-copy.
 - `dd:rust:testing` — unit/integration layout, mocking, property/snapshot testing.
 
-`core` carries what applies to almost every Rust edit; the other five are conditional and stack on top. It was merged out of five skills (`async`, `code-structure`, `error-handling`, `ownership`, `type-system`) because the nudge hook goes quiet after the *first* skill loads — so that one skill has to be the one that covers the edit. Five 20-line skills meant a session could load `async`, fall silent, and write a whole new module with no layout, naming, or error rules in context.
+`core` carries what applies to almost every Rust edit; the other four are conditional and stack on top. It was merged out of five skills (`async`, `code-structure`, `error-handling`, `ownership`, `type-system`) because the nudge hook goes quiet after the *first* skill loads — so that one skill has to be the one that covers the edit. Five 20-line skills meant a session could load `async`, fall silent, and write a whole new module with no layout, naming, or error rules in context.
+
+`comments` was folded in for the same reason, one step worse: it never self-triggered at all. Writing Rust *is* writing doc comments, but the model never perceives "I'm about to write a doc comment" as a separate task, so the skill's description never matched. Session `673dfc91` loaded `core` on turn 1 and `comments` only after eight edit batches had already shipped 4-line module headers and docs longer than the functions under them.
 
 Command-only (`disable-model-invocation`):
 

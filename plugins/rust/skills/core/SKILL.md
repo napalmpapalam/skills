@@ -1,12 +1,12 @@
 ---
 name: dd:rust:core
-description: The Rust conventions that apply to almost every edit — type design, error handling, ownership, async/tokio, module layout, code style, and naming. Use whenever writing, changing, or reviewing Rust code, designing types or error enums, dealing with borrows and lifetimes, writing async/tokio code, organizing modules or workspaces, choosing visibility, refactoring functions to be shorter or flatter, naming anything, or when the user asks about idiomatic Rust. This is the default Rust skill — load it first; reach for serde, testing, linting, or performance on top of it when the task calls for them.
+description: The Rust conventions that apply to almost every edit — type design, error handling, ownership, async/tokio, module layout, comments and doc comments, code style, and naming. Use whenever writing, changing, or reviewing Rust code, designing types or error enums, dealing with borrows and lifetimes, writing async/tokio code, organizing modules or workspaces, choosing visibility, writing or shortening comments, doc comments, and module headers, refactoring functions to be shorter or flatter, naming anything, or when the user asks about idiomatic Rust. This is the default Rust skill — load it first; reach for serde, testing, linting, or performance on top of it when the task calls for them.
 ---
 
 # Rust Core Rules
 
 The conventions that govern essentially every Rust edit. Topic skills stack on top:
-`dd:rust:comments`, `dd:rust:serde`, `dd:rust:testing`, `dd:rust:linting`, `dd:rust:performance`.
+`dd:rust:serde`, `dd:rust:testing`, `dd:rust:linting`, `dd:rust:performance`.
 
 ## Type system
 
@@ -88,6 +88,59 @@ The conventions that govern essentially every Rust edit. Topic skills stack on t
 - Prefer file-per-module (`foo.rs`) over `foo/mod.rs` — cleaner, less nesting
 - Use `foo/mod.rs` only when the module has submodules
 - Module names are `snake_case` — match the file name exactly
+
+## Comments
+
+Default to **less** — well-named code beats a comment. But a workspace with `missing_docs = "warn"` and rustdoc under `-D warnings` needs a doc on every public item, so shorten them, never delete them.
+
+The failure to avoid is the **comment poem**: a prose block above a file or function, explaining the design to nobody.
+
+- **Budget:** `//!` module header — 1 line. `///` item doc — 1 line. `//` inline — 1–3 lines.
+- **Never write a comment longer than the code it describes.**
+- **Obvious → omit.** `/// Returns the config.` on `fn config()` is noise. A public item still needs one line, so make it say what the name doesn't.
+- **`///`, one line by default** — say *what it is* / *what it returns*, not how it works. The signature already shows the types; don't restate them. Struct fields get a short line each, not a paragraph.
+- Add a second paragraph **only** for a non-obvious invariant, precondition, or rationale. Rationale that merely sounds insightful is still a poem — cut it.
+- **No `# Arguments` / `# Returns`** sections restating the signature. Keep `# Errors` / `# Panics` / `# Safety` only when the behavior is non-obvious.
+- **`//!` is one line: what the module is.** No architecture essays, no cross-module narration. Design rationale lives in a design doc (`~/.context/`, `docs/`), not the file head. A thin module the name already explains (a CLI subcommand, a re-exporting `mod.rs`) can skip it.
+- **Delete `//` that restate the code.** `// increment the counter` above `count += 1` is noise. Keep a `//` only for a non-obvious *why*: a workaround, a subtle ordering requirement, a spec reference, a deliberate deviation. If it explains *what* a block does, extract a well-named function instead.
+- **Reviewing existing code:** collapse multi-paragraph docs to one line unless the extra text records a real invariant, shrink `//!` headers to one line, strip restating `//`. Never strip a public item's doc to nothing — that breaks the `missing_docs` gate.
+
+```rust
+// Too much — restates the type, over-explains an internal alias
+/// A boxed, thread-safe error cause — what a [`PolicyStoreError`] carries as its
+/// source, kept whole so the backend's error chain survives to the log site.
+type BoxError = Box<dyn StdError + Send + Sync + 'static>;
+
+// Enough
+/// Boxed error cause carried by [`PolicyStoreError`], kept whole for the log site.
+type BoxError = Box<dyn StdError + Send + Sync + 'static>;
+```
+
+```rust
+// Too much — a 4-line doc on a 3-line function
+/// The centered, capped column text renders into — CSS `max-width` + `margin: 0 auto`.
+///
+/// An odd gutter's remainder goes right, so the column doesn't jitter as the pane resizes.
+/// Highlights live inside this rect; chrome (border, footer) spans the pane.
+pub fn content_column(area: Rect) -> Rect {
+
+// Enough — the jitter rule is the one thing the signature can't show
+/// Centered, width-capped column for text. An odd gutter's remainder goes right, so the
+/// column doesn't jitter on resize.
+pub fn content_column(area: Rect) -> Rect {
+```
+
+```rust
+// Too much — a 9-line design essay at the top of every file
+//! The policy persistence contract.
+//!
+//! [`PolicyStore`] is the seam between the engine and durable storage: the crate
+//! only *defines* it, the binary implements it over the Postgres pool ...
+//! (six more lines)
+
+// Enough
+//! Policy persistence contract — [`PolicyStore`], implemented over Postgres by the binary.
+```
 
 ## Code style
 
