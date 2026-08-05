@@ -174,7 +174,36 @@ ctx.upstream
     })
 ```
 
-Keep the `match` when arms do real work, bind different variables, or the compiler's exhaustiveness check is the point (matching a state enum).
+**Both arms producing a value is not an excuse** — that is what `map_or_else` is for. Binding `e` in the `Err` arm only to format or log it is not "real work"; it is the closure argument.
+
+```rust
+// Still a match — both arms just build a string
+self.status = match saved {
+    Ok(()) => "quote parked. q to close, answer the prompt, then reopen".to_owned(),
+    Err(e) => format!("the quote could not be parked: {e:#}"),
+};
+
+// map_or_else — err closure first, ok closure second
+self.status = saved.map_or_else(
+    |e| format!("the quote could not be parked: {e:#}"),
+    |()| "quote parked. q to close, answer the prompt, then reopen".to_owned(),
+);
+```
+
+Reach for the combinator that matches the shape:
+
+| Shape | Use |
+|---|---|
+| both arms produce a value | `map_or_else` |
+| one arm is a constant/default | `map_or`, `unwrap_or`, `unwrap_or_default` |
+| one arm computes a fallback | `unwrap_or_else` |
+| transform only the success | `map`, `and_then` |
+| transform only the error | `map_err` |
+| log, then drop | `inspect_err(…).ok()` |
+| propagate | `?` |
+| `Option` from a fallible call | `.ok()`, `.ok_or_else()` |
+
+Keep the `match` only when arms do genuinely different work (not just building different values of the same type), or the compiler's exhaustiveness check is the point — matching a state enum with three or more variants.
 - **Functional over imperative** — prefer `.filter()`, `.map()`, `.fold()` over `for` loops
 - **Flat over nested** — invert conditions with early `return`/`continue`/`break` (guard clauses). Less nesting = easier to read
 - **Avoid `else`** — almost never needed. Use early `return`/`continue` instead. `else` adds nesting and cognitive load. Rare exceptions are fine, but default to no `else`
