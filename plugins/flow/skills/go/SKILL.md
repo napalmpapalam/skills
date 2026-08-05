@@ -19,6 +19,10 @@ The method is depth-first and just-in-time: build one complete, working layer at
 - **No dead code.** Build only what this slice needs. No config, interface, or scaffold for a future slice that hasn't arrived. If it isn't used now, it isn't in scope.
 - **One slice per session.** Planning and building are separate sessions too — a new doc is handed over, not built on (Step 2.5). After a slice lands, the user runs `/clear` and starts the next one fresh from the doc. Don't try to do two slices in one go.
 - **What before how.** The user often knows the end state, not the path. Settle *how the slice will work* before writing code (see Step 1).
+- **Slices are scaffolding, not vocabulary.** "Slice", "go", slice numbers, and the doc itself are *your* planning frame — they mean nothing to anyone reading the repo. Never let them leak into commit messages, PR titles or descriptions, source comments, doc comments, READMEs, identifiers, or test names. Describe the change by what it does, not by where it sat in the plan.
+  - ❌ `feat: slice 2 — transcript loading` · ✅ `feat(transcript): load a session JSONL into scrollable lines`
+  - ❌ `/// Reading measure, in columns. Configurable in slice 4.` · ✅ `/// Reading measure, in columns.` — a not-yet-built option is not a fact about the code; if the constraint is real, say it without the slice number.
+  - ❌ a PR description opening "This is the second go on the quotr doc." · ✅ open with what the PR changes and why.
 
 ## The living doc
 
@@ -114,6 +118,8 @@ Keep it to those. Anything a fresh session can find by reading the doc doesn't b
 Build the current slice end to end. Keep the change minimal and within the PR-size budget. If it's growing past ~1k lines, stop and re-slice — tell the user it needs splitting rather than shipping an unreviewable PR.
 
 For logic-heavy slices (clear inputs/outputs — parsers, calculations, rules), drive it with a failing test first. For scaffold, wiring, and config slices, skip it — there's nothing to red-test.
+
+Everything you write into the repo is read by people who never saw the doc — keep slice vocabulary out of it (see Principles).
 
 ### Step 4 — Close the slice
 
