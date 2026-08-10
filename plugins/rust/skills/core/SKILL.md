@@ -206,7 +206,32 @@ Reach for the combinator that matches the shape:
 Keep the `match` only when arms do genuinely different work (not just building different values of the same type), or the compiler's exhaustiveness check is the point — matching a state enum with three or more variants.
 - **Functional over imperative** — prefer `.filter()`, `.map()`, `.fold()` over `for` loops
 - **Flat over nested** — invert conditions with early `return`/`continue`/`break` (guard clauses). Less nesting = easier to read
-- **Avoid `else`** — almost never needed. Use early `return`/`continue` instead. `else` adds nesting and cognitive load. Rare exceptions are fine, but default to no `else`
+- **Avoid `else`** — almost never needed. Invert the condition and `return`/`continue` early. `else` adds nesting and cognitive load. Rare exceptions are fine, but default to no `else`
+
+This holds just as hard when the `if/else` sits in **expression position** wrapped in a constructor — `Ok(if c { a } else { b })`, `Some(if …)`, a `let x = if …`. The wrapper is what makes the `else` look unavoidable: it isn't. Sink the wrapper into an early `return` and the common case lands on the last line, unindented.
+
+```rust
+// The Ok(…) hides a guard clause — both outcomes indented, else in the middle
+fn stage_timer() -> CudaResult<StageTimer> {
+    Ok(if is_dry_run()? {
+        StageTimer::silent()
+    } else {
+        StageTimer::new()
+    })
+}
+
+// Guard clause — the special case exits, the normal path is the last line
+fn stage_timer() -> CudaResult<StageTimer> {
+    if is_dry_run()? {
+        return Ok(StageTimer::silent());
+    }
+
+    Ok(StageTimer::new())
+}
+```
+
+Repeating the `Ok(` is the price, and it is worth it: the reader sees the exceptional case handled and dismissed, then the answer. Two branches of a *ternary* read as "pick one"; a guard reads as "unless…, this."
+
 - **One `use` per crate** — merge everything from the same crate into a single braced import, then group `std` / external / local with a blank line between. Stable `rustfmt` cannot do this (`imports_granularity` is nightly-only), so write it merged by hand and keep it that way when adding an import.
 
 ```rust
