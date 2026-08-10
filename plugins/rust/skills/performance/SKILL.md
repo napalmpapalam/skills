@@ -1,5 +1,5 @@
 ---
-name: dd:rust:performance
+name: performance
 description: Rust performance — iterators, release profiles, inlining, cache layout, bounds checks, allocation profiling. Use whenever optimizing Rust code, choosing between iterators and loops, configuring release profiles, adding inline hints, profiling allocations, or when the user asks about performance patterns, benchmarking, or hot-path optimization in Rust.
 ---
 

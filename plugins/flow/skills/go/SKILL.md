@@ -1,5 +1,5 @@
 ---
-name: dd:flow:go
+name: go
 description: Plan and ship a feature as vertical slices driven by one living doc, one slice ("go") at a time. Use when the user starts a new feature or project, asks how to build or approach something, wants to break scope into tasks or slices, says "let's plan this", "how should I build X", "do a go", "next slice", "what do I do next", or wants to update/continue from a feature context doc. Also use to run the close-slice ritual after finishing a piece of work.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion
 version: 0.1.2

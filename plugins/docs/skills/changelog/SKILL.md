@@ -1,5 +1,5 @@
 ---
-name: dd:docs:changelog
+name: changelog
 description: Generate or update a CHANGELOG.md by analyzing git diffs to understand what actually changed in the codebase. Use this skill whenever the user asks to create, update, generate, or add to a changelog, write release notes from recent changes, document what changed between versions, or says things like "update the changelog", "what changed since last release", "add changelog entry".
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Agent, AskUserQuestion
 version: 0.1.0

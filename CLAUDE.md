@@ -17,24 +17,24 @@ This is a plugin marketplace — a registry of plugins (skills, commands, agents
 
 Skills are namespaced under the `dd:` prefix so they're easy to find via `/dd:…`. The trick is to put the `dd:` prefix **only in `plugin.json`'s `name`**, and keep the marketplace-facing names plain kebab-case — a colon in an install identifier breaks Claude Code's `plugin list`/install parsing.
 
-The slash command is derived as **`<plugin.json name>:<skill-dir>`** (the skill's `name:` frontmatter does *not* affect it).
+The slash command is **`<plugin.json name>` + `:` + `<SKILL.md name:>`** — Claude Code adds the plugin prefix itself. So the skill's `name:` must be **bare**: `name: commit`, never `name: dd:git:commit`, or you get `/dd:git:dd:git:commit` in the slash menu. (Official plugins all use bare names; that's the pattern.)
 
 | Field | Value | Why |
 |---|---|---|
 | Marketplace `.name` | kebab — `napalmpapalam-skills` | install identifier — must be colon-free |
 | Marketplace plugin-entry `.name` | kebab — `git` | this is the install key (`git@napalmpapalam-skills`) — must be colon-free |
 | Plugin `plugin.json` `.name` | `dd:<domain>` — `dd:git` | drives the command prefix; the colon is safe here (not an install key) |
-| Skill directory | kebab — `commit` | becomes the command suffix |
-| Skill `SKILL.md` `name:` | `dd:<domain>:<skill-dir>` — `dd:git:commit` | documents the command; keep it in sync |
+| Skill directory | kebab — `commit` | keep it equal to `name:` |
+| Skill `SKILL.md` `name:` | **bare** kebab — `commit` | the command suffix; the `dd:<domain>:` prefix is added for you |
 
-Result: `plugins/git/skills/commit/SKILL.md` → `/dd:git:commit`. Enforced by `scripts/validate-naming.sh`.
+Result: `plugins/git/skills/commit/SKILL.md` with `name: commit` → `/dd:git:commit`. Enforced by `scripts/validate-naming.sh`.
 
 > **Caveat:** the colon in `plugin.json`'s `name` works in Claude Code and with git/directory marketplaces, but **claude.ai marketplace sync requires kebab-case** and would reject it. Fine for local/personal use; drop the `dd:` from `plugin.json` if you ever publish to the claude.ai marketplace.
 
 ## Adding a Plugin
 
 1. Create `plugins/<domain>/.claude-plugin/plugin.json` with `name` = `dd:<domain>` (e.g. `dd:git`).
-2. Add components at the plugin root: `skills/<skill-dir>/SKILL.md` (with `name: dd:<domain>:<skill-dir>`), `commands/*.md`, `agents/*.md`, etc.
+2. Add components at the plugin root: `skills/<skill-dir>/SKILL.md` (with a **bare** `name: <skill-dir>`), `commands/*.md`, `agents/*.md`, etc.
 3. Register the plugin in the `plugins` array in `.claude-plugin/marketplace.json` with a **kebab-case** `name` (e.g. `git`, matching the `dd:` suffix), `source` (e.g. `./plugins/<domain>`), and `description`.
 4. List every skill in the plugin's `README.md` by its command (`` /dd:<domain>:<skill-dir> ``). Enforced by `scripts/validate-readme-skills.sh`.
 5. Run the validation suite locally before pushing:

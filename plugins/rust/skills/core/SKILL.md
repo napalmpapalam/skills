@@ -1,5 +1,5 @@
 ---
-name: dd:rust:core
+name: core
 description: The Rust conventions that apply to almost every edit — type design, error handling, ownership, async/tokio, module layout, comments and doc comments, code style, and naming. Use whenever writing, changing, or reviewing Rust code, designing types or error enums, dealing with borrows and lifetimes, writing async/tokio code, organizing modules or workspaces, choosing visibility, writing or shortening comments, doc comments, and module headers, refactoring functions to be shorter or flatter, naming anything, or when the user asks about idiomatic Rust. This is the default Rust skill — load it first; reach for serde, testing, linting, or performance on top of it when the task calls for them.
 ---
 

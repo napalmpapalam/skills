@@ -1,5 +1,5 @@
 ---
-name: dd:rust:linting
+name: linting
 description: Rust workspace lint configuration, clippy enforcement, and formatting rules. Use whenever setting up or modifying Cargo.toml lint configuration, configuring clippy or rustfmt, adding CI checks for Rust, or when the user asks about lint rules, formatting settings, or workspace-level lint inheritance.
 ---
 

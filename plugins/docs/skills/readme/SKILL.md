@@ -1,5 +1,5 @@
 ---
-name: dd:docs:readme
+name: readme
 description: Generate or update a README.md for a project by analyzing its codebase, dependencies, and structure. Use this skill whenever the user asks to write, create, generate, update, refresh, or fix a README, document a project, or wants project documentation — even if they just say "write me a readme", "update the readme", or "the readme is outdated".
 allowed-tools: Read, Glob, Grep, Write, Bash, Agent, AskUserQuestion
 version: 0.1.0

@@ -1,5 +1,5 @@
 ---
-name: dd:rust:serde
+name: serde
 description: Rust serde serialization — derive patterns, snake_case defaults, enum representations, attributes, zero-copy deserialization. Use whenever working with serde in Rust, adding Serialize/Deserialize derives, configuring JSON/YAML/TOML serialization, handling optional fields, choosing enum representations, or when the user asks about serde attributes, custom serializers, or data format conversion in Rust.
 ---
 

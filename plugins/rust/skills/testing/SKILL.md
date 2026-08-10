@@ -1,5 +1,5 @@
 ---
-name: dd:rust:testing
+name: testing
 description: Rust testing — unit/integration layout, mocking with mockall, async test patterns, property testing, snapshot testing. Use whenever writing or reviewing Rust tests, setting up test infrastructure, choosing mocking strategies, organizing test modules, debugging test failures, or when the user asks about testing patterns, coverage, or test utilities in Rust projects.
 ---
 

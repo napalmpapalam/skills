@@ -1,5 +1,5 @@
 ---
-name: dd:git:commit
+name: commit
 description: Use when about to create a git commit — composing the commit message, choosing the conventional-commit type prefix, or staging changes for a commit
 ---
 

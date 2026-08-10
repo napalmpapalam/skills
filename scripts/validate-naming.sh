@@ -40,7 +40,9 @@ for ((i=0; i<plugin_count; i++)); do
   fi
   echo "✓ Plugin entry '$entry_name' (plugin.json '$plugin_name')"
 
-  # Each skill: dir kebab-case, and frontmatter name == <plugin.json name>:<dir>
+  # Each skill: dir kebab-case, and frontmatter name == <dir>, bare.
+  # Claude Code prefixes the plugin.json name itself — repeating it here yields
+  # /dd:rust:dd:rust:review in the slash menu.
   if [ -d "$source/skills" ]; then
     for skill_md in "$source"/skills/*/SKILL.md; do
       [ -e "$skill_md" ] || continue
@@ -49,13 +51,12 @@ for ((i=0; i<plugin_count; i++)); do
         echo "✗ Skill dir '$dir': must be lowercase kebab-case"
         exit 1
       fi
-      expected="$plugin_name:$dir"
       actual=$(sed -n 's/^name:[[:space:]]*//p' "$skill_md" | head -1 | tr -d '\r')
-      if [ "$actual" != "$expected" ]; then
-        echo "✗ Skill '$skill_md': name '$actual' must be '$expected'"
+      if [ "$actual" != "$dir" ]; then
+        echo "✗ Skill '$skill_md': name '$actual' must be '$dir' (bare — Claude Code adds the '$plugin_name:' prefix)"
         exit 1
       fi
-      echo "  ✓ Skill '$actual'"
+      echo "  ✓ Skill '$actual' → /$plugin_name:$dir"
     done
   fi
 done
