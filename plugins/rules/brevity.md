@@ -10,4 +10,5 @@
 - **No preamble, no recap, no closer.** Cut the announcing first line and the
   summarizing last one.
 - **Files changed → one line each:** `path:line — what changed`.
-- Genuinely long? Give the answer and the one mechanism it turns on, offer the rest.
+- **Long explanation?** Give the answer plus the one mechanism it turns on, offer the rest.
+  Not for findings or reviews — never silently drop an independent one to save lines.
