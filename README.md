@@ -32,8 +32,9 @@ The marketplace also accepts a full git URL:
 | --- | --- | --- |
 | `git` | Git conventions and workflows | `dd:git:commit`, `dd:git:pr` |
 | `docs` | Documentation generation with a shared voice | `dd:docs:readme`, `dd:docs:changelog` |
-| `flow` | Plan and ship features as vertical slices via one living doc | `dd:flow:go` |
+| `flow` | Plan and ship features as vertical slices via one living doc | `dd:flow:go`, `dd:flow:seed` |
 | `rust` | Rust conventions plus a `/dd:rust:review` command | `dd:rust:core`, `dd:rust:linting`, `dd:rust:performance`, `dd:rust:serde`, `dd:rust:testing`, `dd:rust:review` |
+| `say` | Manual commands that re-steer how Claude explains something | `dd:say:what` |
 | `rules` | Global house rules injected every session | — (session hook) |
 | `herdr` | Names the herdr pane after Claude's chat title | — (pane hook) |
 | `english` | Brief English-grammar coaching on every prompt | — (prompt hook) |
