@@ -61,6 +61,14 @@
       "author": {
         "name": "Semen Loktionov"
       }
+    },
+    {
+      "name": "say",
+      "source": "./plugins/say",
+      "description": "Manual commands that re-steer how Claude explains something",
+      "author": {
+        "name": "Semen Loktionov"
+      }
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "name": "dd:say",
+  "version": "0.1.0",
+  "description": "Manual commands that re-steer how Claude explains something",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}
