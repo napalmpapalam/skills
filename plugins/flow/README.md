@@ -2,6 +2,11 @@
 
 Plan and ship features as vertical slices through one living doc.
 
+`/dd:flow:look` goes ahead of the work: background agents read the primary
+sources — official docs, specs, the code itself — and come back with cited
+findings, or a menu of options and their costs. A bounded check lands in the
+chat; groundwork for a feature lands in `~/.context/` as the doc's first notes.
+
 `/dd:flow:seed` hands the session off before a `/clear`: it audits the doc
 against the chat, folds in whatever got settled after the last write, and prints
 the seed block for the next session.

@@ -1,8 +1,8 @@
 ---
 name: go
 description: Plan and ship a feature as vertical slices driven by one living doc, one slice ("go") at a time. Use when the user starts a new feature or project, asks how to build or approach something, wants to break scope into tasks or slices, says "let's plan this", "how should I build X", "do a go", "next slice", "what do I do next", or wants to update/continue from a feature context doc. Also use to run the close-slice ritual after finishing a piece of work.
-allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion
-version: 0.1.2
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Agent, Skill
+version: 0.1.3
 effort: medium
 ---
 
@@ -90,11 +90,11 @@ Turn the framed scope into vertical slices:
 
 Framing is exploration-heavy — rejected proposals, refuted guesses, dead ends. Building on top of that context means the doc never gets used as what it is: the seed a fresh session reads. Handing over tests the seed while it's still cheap to fix.
 
-1. **Re-read the doc with fresh eyes** — the same check as Step 4.3 (placeholders, contradictions, ambiguity, stale scope). Fix what's broken inline.
+1. **Re-read the doc with fresh eyes** — the same check as Step 4.4 (placeholders, contradictions, ambiguity, stale scope). Fix what's broken inline.
 2. **Print the TL;DR** (below) so the user can judge the plan without opening the file.
 3. **Hand over.** Say the doc is ready and give the seed block (below). The user `/clear`s and re-enters this skill to build. Don't run the clear for the user, and don't start Step 3.
 
-If the doc already exists (a continuing session), skip this step — go straight to Step 3.
+If the doc already exists (a continuing session), skip this step — go straight to Step 3. A doc with an empty **## Slices** is not a continuing session: `/dd:flow:look` seeds facts, not a plan, so that doc still gets Step 1, Step 2, and this hand-over.
 
 **The TL;DR.** The user should get the **whole picture in one scan** — never have to open the file to know what was decided and what's about to be built. So it covers everything the doc covers; what gets cut is the prose, not the items.
 
@@ -126,14 +126,15 @@ Everything you write into the repo is read by people who never saw the doc — k
 When the slice is built, wrap it up so it's ready for the user's review. Reviewing, committing, and clearing the chat are the user's to do — don't do them for the user or tell the user to do them.
 
 1. **Verify green.** Run the build/tests/run command and show the output. No "done" without fresh evidence in the same message.
-2. **Update the doc** — index, not store: mark the slice `[x]` with a pointer to the change, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
-3. **Re-read the doc with fresh eyes.** It's the seed for a session that has none of this context, so check it as that reader would and fix what's broken inline — no second pass needed:
+2. **Review the diff in a subagent.** You wrote the code, so you're the worst reviewer of it — a fresh agent reads it cold, and the check output stays out of this context. Brief it to load **every** convention skill for the language, not the subset that looks relevant: the "irrelevant" ones carry the rules a diff actually breaks — comment density, naming, lint config. Rust → invoke `/dd:rust:review`, which loads all five and runs the cargo checks itself. Fix what it finds, or say why you didn't.
+3. **Update the doc** — index, not store: mark the slice `[x]` with a pointer to the change, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
+4. **Re-read the doc with fresh eyes.** It's the seed for a session that has none of this context, so check it as that reader would and fix what's broken inline — no second pass needed:
    - **Placeholders** — any `TBD`, `TODO`, or requirement too vague to act on?
    - **Contradictions** — does a new Decision cut against an older one, or against Destination?
    - **Ambiguity** — could a line be read two ways? Pick one and say it outright.
    - **Stale scope** — do the remaining slices still match what the last one taught you?
-4. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **seed block** (Step 2.5) ready for when the user wants to continue — offer it, don't direct.
+5. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **seed block** (Step 2.5) ready for when the user wants to continue — offer it, don't direct.
 
 ## Starting a feature from scratch
 
-If there's no doc yet, do Step 1 first, then create the doc in `~/.context/` with the structure above, then Step 2. The very first slice of a new project is usually the scaffold (init, README, CLAUDE.md, CI, lint/fmt) — small, green, runnable.
+If there's no doc yet, do Step 1 first, then create the doc in `~/.context/` with the structure above, then Step 2. If the feature rests on facts nobody has yet — an unfamiliar API, protocol, or codebase — run `/dd:flow:look` before framing: it writes the doc's **Notes** from primary sources so Step 1 grills open questions instead of verifiable ones. The very first slice of a new project is usually the scaffold (init, README, CLAUDE.md, CI, lint/fmt) — small, green, runnable.

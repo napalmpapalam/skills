@@ -1,7 +1,6 @@
 ---
 name: review
-description: Comprehensive Rust code review — runs cargo checks, loads all Rust convention skills, reviews changes, and generates a structured report. Invoke explicitly with /dd:rust:review when reviewing Rust changes, preparing a PR for merge, or auditing Rust code quality.
-disable-model-invocation: true
+description: Comprehensive Rust code review — runs cargo checks, loads all Rust convention skills, reviews changes, and generates a structured report. Use when reviewing finished Rust changes, closing a slice that touched Rust, preparing a PR for merge, or auditing Rust code quality — not while writing the code.
 ---
 
 # Rust Code Review
