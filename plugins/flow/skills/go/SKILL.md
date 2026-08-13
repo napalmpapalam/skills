@@ -70,6 +70,7 @@ Working from an older doc that has no banner? Add it — one line, no other edit
 Settle *what this slice does and how it will work*. Grill one question at a time:
 
 - **Scope-check before questioning.** If the request is really several independent subsystems ("a platform with chat, billing, and analytics"), say so now — don't burn questions refining details of something that has to be split into separate features first. Each gets its own doc.
+- **Read the repo's spec first** (`docs/design/`, if it has one). It holds why the built system is the way it is — decisions promoted out of earlier features. Most "why is this like this" questions are answered there, and framing that contradicts it is framing that gets thrown away.
 - **Look up facts yourself** — read the code, run a command, `WebSearch`/`WebFetch` the docs. Don't ask the user what you can verify.
 - **Put decisions to the user** — anything that shapes the design. Ask one at a time, and **recommend an answer** each time so it's a yes/no, not an essay.
 - **Don't write code until the shape is confirmed.**
@@ -90,7 +91,7 @@ Turn the framed scope into vertical slices:
 
 Framing is exploration-heavy — rejected proposals, refuted guesses, dead ends. Building on top of that context means the doc never gets used as what it is: the seed a fresh session reads. Handing over tests the seed while it's still cheap to fix.
 
-1. **Re-read the doc with fresh eyes** — the same check as Step 4.4 (placeholders, contradictions, ambiguity, stale scope). Fix what's broken inline.
+1. **Re-read the doc with fresh eyes** — the same check as Step 4.5 (placeholders, contradictions, ambiguity, stale scope). Fix what's broken inline.
 2. **Print the TL;DR** (below) so the user can judge the plan without opening the file.
 3. **Hand over.** Say the doc is ready and give the seed block (below). The user `/clear`s and re-enters this skill to build. Don't run the clear for the user, and don't start Step 3.
 
@@ -127,13 +128,14 @@ When the slice is built, wrap it up so it's ready for the user's review. Reviewi
 
 1. **Verify green.** Run the build/tests/run command and show the output. No "done" without fresh evidence in the same message.
 2. **Review the diff in a subagent.** You wrote the code, so you're the worst reviewer of it — a fresh agent reads it cold, and the check output stays out of this context. Brief it to load **every** convention skill for the language, not the subset that looks relevant: the "irrelevant" ones carry the rules a diff actually breaks — comment density, naming, lint config. Rust → invoke `/dd:rust:review`, which loads all five and runs the cargo checks itself. Fix what it finds, or say why you didn't.
-3. **Update the doc** — index, not store: mark the slice `[x]` with a pointer to the change, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
-4. **Re-read the doc with fresh eyes.** It's the seed for a session that has none of this context, so check it as that reader would and fix what's broken inline — no second pass needed:
+3. **Promote what outlives the slice.** A decision that's still true of the shipped system belongs in the repo's spec, not only in a doc that gets deleted — invoke `/dd:flow:spec`. Uncommitted here means the next feature's session rediscovers it from scratch, or contradicts it. Scaffold and wiring slices usually promote nothing; say so rather than inventing an entry.
+4. **Update the doc** — index, not store: mark the slice `[x]` with a pointer to the change, add any new settled **Decisions** (gist + pointer), fold new facts into **Notes**, move anything now-sharp out of **Not yet specified**.
+5. **Re-read the doc with fresh eyes.** It's the seed for a session that has none of this context, so check it as that reader would and fix what's broken inline — no second pass needed:
    - **Placeholders** — any `TBD`, `TODO`, or requirement too vague to act on?
    - **Contradictions** — does a new Decision cut against an older one, or against Destination?
    - **Ambiguity** — could a line be read two ways? Pick one and say it outright.
    - **Stale scope** — do the remaining slices still match what the last one taught you?
-5. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **seed block** (Step 2.5) ready for when the user wants to continue — offer it, don't direct.
+6. **Report completion for review.** State plainly that the slice's implementation is finished, then hand over what the diff won't tell them. **Lead with anything needing the user's decision** — an interim posture, a shortcut taken, a risk accepted, a surprise found on the way. Then the shape of the change and any *why* that isn't visible in the code. Don't re-narrate the diff module by module; they're about to read it. The user reviews and commits it — never commit for the user. Have the next slice picked (the next takeable item on the frontier) and the **seed block** (Step 2.5) ready for when the user wants to continue — offer it, don't direct.
 
 ## Starting a feature from scratch
 

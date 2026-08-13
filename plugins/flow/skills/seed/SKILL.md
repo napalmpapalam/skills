@@ -14,7 +14,7 @@ the seed block definition this skill assumes.
 **Audit the doc against this chat.** What's missing is whatever got settled
 after the last write: decisions, facts worth a pointer, slices that shipped or
 changed shape, fog that cleared. Fold each in as index-not-store — one-line gist
-plus pointer — then run the fresh-eyes check from `go` Step 4.4.
+plus pointer — then run the fresh-eyes check from `go` Step 4.5.
 
 **Report the doc edits**, one line each. "Nothing missing" is a valid answer.
 
