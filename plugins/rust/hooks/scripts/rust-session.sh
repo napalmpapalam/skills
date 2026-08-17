@@ -14,8 +14,9 @@ while [ -n "$dir" ]; do
     cat <<'EOF'
 This is a Rust project — the dd:rust:* conventions govern all Rust you write AND
 any answer about what a Rust change would do. dd:rust:core is the default (types,
-error handling, ownership, async, module layout, style, naming); comments, testing,
-serde, performance, and linting stack on top when the task calls for them.
+error handling, ownership, async, module layout, comments, style, naming) — there is
+no separate comments skill, the budget lives in core and applies to every edit.
+Testing, serde, performance, and linting stack on top when the task calls for them.
 Load the relevant skill when reasoning about Rust, not only when editing.
 EOF
     break
