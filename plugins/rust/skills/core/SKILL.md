@@ -98,8 +98,8 @@ The failure to avoid is the **comment poem**: a prose block above a file or func
 - **Budget:** `//!` module header — 1 line. `///` item doc — 1 line. `//` inline — 1–3 lines.
 - **Never write a comment longer than the code it describes.**
 - **Obvious → omit.** `/// Returns the config.` on `fn config()` is noise. A public item still needs one line, so make it say what the name doesn't.
-- **`///`, one line by default** — say *what it is* / *what it returns*, not how it works. The signature already shows the types; don't restate them. Struct fields get a short line each, not a paragraph.
-- **Method docs start with a verb.** A `fn`'s doc answers "what does it do" in the third person — `Builds…`, `Returns…`, `Resolves…` — never a noun phrase ("The live agent this request addresses…") and never the imperative ("Build the router"). Types, fields, and consts may stay noun phrases.
+- **`///`, one line by default** — say *what it does* / *what it returns*, not how it works. The signature already shows the types; don't restate them. Struct fields get a short line each, not a paragraph.
+- **A `fn` doc starts with a third-person verb** — `Builds…`, `Returns…`, `Resolves…` — never a noun phrase ("The live agent this request addresses…") and never the imperative ("Build the router"). Only types, fields, and consts may stay noun phrases.
 - **Parallel cases become a list** — one line per item; never pack alternatives into one prose sentence. No list to make = short sentences, one idea each.
 - Add a second paragraph **only** for a non-obvious invariant, precondition, or rationale. Rationale that merely sounds insightful is still a poem — cut it.
 - **No `# Arguments` / `# Returns`** sections restating the signature. Keep `# Errors` / `# Panics` / `# Safety` only when the behavior is non-obvious.
