@@ -1,6 +1,6 @@
 {
   "name": "dd:rust",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Rust conventions and best practices for Claude Code",
   "author": {
     "name": "Semen Loktionov"

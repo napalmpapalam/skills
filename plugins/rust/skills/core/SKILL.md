@@ -98,7 +98,9 @@ The failure to avoid is the **comment poem**: a prose block above a file or func
 - **Budget:** `//!` module header — 1 line. `///` item doc — 1 line. `//` inline — 1–3 lines.
 - **Never write a comment longer than the code it describes.**
 - **Obvious → omit.** `/// Returns the config.` on `fn config()` is noise. A public item still needs one line, so make it say what the name doesn't.
-- **`///`, one line by default** — say *what it is* / *what it returns*, not how it works. The signature already shows the types; don't restate them. Struct fields get a short line each, not a paragraph.
+- **`///`, one line by default** — say *what it does* / *what it returns*, not how it works. The signature already shows the types; don't restate them. Struct fields get a short line each, not a paragraph.
+- **A `fn` doc starts with a third-person verb** — `Builds…`, `Returns…`, `Resolves…` — never a noun phrase ("The live agent this request addresses…") and never the imperative ("Build the router"). Only types, fields, and consts may stay noun phrases.
+- **Parallel cases become a list** — one line per item; never pack alternatives into one prose sentence. No list to make = short sentences, one idea each.
 - Add a second paragraph **only** for a non-obvious invariant, precondition, or rationale. Rationale that merely sounds insightful is still a poem — cut it.
 - **No `# Arguments` / `# Returns`** sections restating the signature. Keep `# Errors` / `# Panics` / `# Safety` only when the behavior is non-obvious.
 - **`//!` is one line: what the module is.** No architecture essays, no cross-module narration. Design rationale lives in a design doc (`~/.context/`, `docs/`), not the file head. A thin module the name already explains (a CLI subcommand, a re-exporting `mod.rs`) can skip it.
@@ -125,8 +127,8 @@ type BoxError = Box<dyn StdError + Send + Sync + 'static>;
 pub fn content_column(area: Rect) -> Rect {
 
 // Enough — the jitter rule is the one thing the signature can't show
-/// Centered, width-capped column for text. An odd gutter's remainder goes right, so the
-/// column doesn't jitter on resize.
+/// Returns the centered, width-capped column for text. An odd gutter's remainder
+/// goes right, so the column doesn't jitter on resize.
 pub fn content_column(area: Rect) -> Rect {
 ```
 
