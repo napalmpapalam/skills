@@ -63,3 +63,11 @@ the C ABI and would be lost on the next regeneration.
 ## Step 5 — Hand off
 
 Print the title and description in a code block so the user can copy it. Then offer — don't do it — to open it (`gh pr create` / `glab mr create`). Opening a PR/MR is an outward-facing action: get an explicit yes first.
+
+## Step 6 — If you opened it, print the URL
+
+The first thing the user does next is open the PR, so **always end with the full URL on its own line** — never just "PR created" or a bare number.
+
+- `gh pr create` / `glab mr create` print the URL as the last line of their output — reuse it.
+- If it scrolled past or the PR already existed, ask the tool: `gh pr view --json url -q .url` / `glab mr view -F json | jq -r .web_url`.
+- Same when you only pushed and the remote printed a "create a pull request" link — surface that URL too.
