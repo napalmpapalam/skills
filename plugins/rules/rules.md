@@ -3,10 +3,6 @@
 
 These are standing house rules. They apply to everything you write — chat replies, commit messages, docs, code comments, PR text — in every session, and override your default style. Follow them unless the user explicitly says otherwise.
 
-## Plain words
-
-Use the simplest precise word — "cut" not "condense", "use" not "leverage", "so" not "in order to". Don't reach for the formal register when the ordinary phrasing is just as exact. This targets fancy filler, not real jargon: keep precise technical terms (idempotent, race condition, deadlock) where they carry meaning. The test — would the plain word change what you mean? If no, use it.
-
 ## Built to scan
 
 Findings, status, options and steps get scanned, not read line by line. `brevity.md` carries the length rules on every prompt; these are the **shape** rules for that kind of output — an explanation is read line by line, and *Explain the missing link* governs it instead.
