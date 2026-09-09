@@ -27,7 +27,9 @@ Generate a review-ready **title + description** from the branch diff. Output it 
 
 **The description is an index, not the documentation.** A reviewer reads it to learn where to look and what to be suspicious of — then they read the diff. Anything that *explains the code* belongs in the code as a comment, not here. A long description is not thorough; it's work pushed onto every reviewer.
 
-**Budget: ~200 words total, one screen.** Over that, cut — don't ask for an exception.
+**Budget: ~200 words total, one screen.** Over that, **cut whole bullets** — never compress
+them into denser prose or abbreviations. A line that keeps every fact by shortening the words
+is still over budget in what the reader has to unpack.
 
 | Section | Budget | What goes in |
 |---|---|---|
@@ -53,6 +55,9 @@ the C ABI and would be lost on the next regeneration.
 
 - **Notes for reviewer is not a design doc.** Rejected alternatives, ABI reasoning, and invariants live next to the code that depends on them. Keep this section for a **known follow-up**, a **deliberate omission**, or a **trade-off the diff can't show** — three at most, and if there are more, that's a sign the code needs the comments.
 - **Group changes by intent**, not by file. The diff shows *what*; the description explains *why*.
+- **Same test as the commit body:** every line must carry a fact the reader can't get from the diff.
+  Background on how the system works, a walkthrough of code you didn't touch, and self-narration
+  ("the thing to watch here is…") are the three that pad a description most.
 - **Link only what reviewers can open** — a ticket/issue id, a related MR/PR. **Never** reference local flow docs, `~/.context/` paths, or internal slice/task numbers that live only on your machine — they're useless to other devs.
 
 ## Step 4 — Be honest about testing
