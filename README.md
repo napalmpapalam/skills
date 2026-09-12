@@ -18,7 +18,7 @@ Inside Claude Code, add the marketplace, then install any plugin:
 /plugin install flow@napalmpapalam-skills
 ```
 
-Install any plugin by name — `git`, `docs`, `flow`, `rules`, `herdr` (e.g. `/plugin install rules@napalmpapalam-skills`).
+Install any plugin by name — `git`, `docs`, `flow`, `rust`, `docker`, `rules`, `herdr` (e.g. `/plugin install rules@napalmpapalam-skills`).
 
 The marketplace also accepts a full git URL:
 
@@ -34,6 +34,7 @@ The marketplace also accepts a full git URL:
 | `docs` | Documentation generation with a shared voice | `dd:docs:readme`, `dd:docs:changelog` |
 | `flow` | Plan and ship features as vertical slices via one living doc | `dd:flow:go`, `dd:flow:seed` |
 | `rust` | Rust conventions plus a `/dd:rust:review` command | `dd:rust:core`, `dd:rust:linting`, `dd:rust:performance`, `dd:rust:serde`, `dd:rust:testing`, `dd:rust:review` |
+| `docker` | Dockerfile authoring rules for small, cacheable, secure images | `dd:docker:dockerfile` |
 | `say` | Manual commands that re-steer how Claude explains something | `dd:say:what` |
 | `rules` | Global house rules injected every session | — (session hook) |
 | `herdr` | Names the herdr pane after Claude's chat title | — (pane hook) |

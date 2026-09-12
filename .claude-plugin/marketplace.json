@@ -41,7 +41,7 @@
     {
       "name": "herdr",
       "source": "./plugins/herdr",
-      "description": "Herdr integration — names the herdr pane after Claude's chat title",
+      "description": "Herdr integration \u2014 names the herdr pane after Claude's chat title",
       "author": {
         "name": "Semen Loktionov"
       }
@@ -49,7 +49,7 @@
     {
       "name": "rust",
       "source": "./plugins/rust",
-      "description": "Rust conventions and best practices — auto-triggered convention skills plus a /dd:rust:review command",
+      "description": "Rust conventions and best practices \u2014 auto-triggered convention skills plus a /dd:rust:review command",
       "author": {
         "name": "Semen Loktionov"
       }
@@ -66,6 +66,14 @@
       "name": "say",
       "source": "./plugins/say",
       "description": "Manual commands that re-steer how Claude explains something",
+      "author": {
+        "name": "Semen Loktionov"
+      }
+    },
+    {
+      "name": "docker",
+      "source": "./plugins/docker",
+      "description": "Docker conventions \u2014 Dockerfile authoring rules for small, cacheable, secure images",
       "author": {
         "name": "Semen Loktionov"
       }

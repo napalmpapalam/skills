@@ -1,0 +1,8 @@
+{
+  "name": "dd:docker",
+  "version": "0.1.0",
+  "description": "Docker conventions — Dockerfile authoring rules for small, cacheable, secure images",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}
