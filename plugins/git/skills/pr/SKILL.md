@@ -25,51 +25,37 @@ Generate a review-ready **title + description** from the branch diff. Output it 
 
 **Title:** one line, conventional-commit style (`type(scope): subject`) — reuse the `dd:git:commit` rules. Imperative, ≤72 chars.
 
-**The description is an index, not the documentation.** A reviewer reads it to learn where to look and what to be suspicious of — then they read the diff. Anything that *explains the code* belongs in the code as a comment, not here. A long description is not thorough; it's work pushed onto every reviewer.
+**The description is an index, not the documentation.** A reviewer reads it to learn what changed and why — then they read the diff. Anything that *explains the code* belongs in the code as a comment, not here. A long description is not thorough; nobody reads it.
 
-**Budget: ~200 words total, one screen.** Over that, **cut whole bullets** — never compress
-them into denser prose or abbreviations. A line that keeps every fact by shortening the words
-is still over budget in what the reader has to unpack.
+**Two sections, nothing else: `## Summary` and `## Changes`. Budget: ~150 words.** Over that, **cut whole bullets** — never compress them into denser prose or abbreviations.
 
 | Section | Budget | What goes in |
 |---|---|---|
-| `## Summary` | **2–3 lines** | The problem, and what this does about it. The only place prose is allowed. |
-| `## Changes` | **≤6 bullets, one line each** | Grouped by area or intent, never a file list. |
-| `## Test plan` | **≤4 bullets, one line each** | Only what was actually run. |
-| `## Notes for reviewer` | **≤3 bullets, one line each** | Only what stops a reviewer filing a wrong comment. |
+| `## Summary` | **≤4 sentences + optional visual** | The problem, its effect, and what this does about it. The only place prose is allowed. |
+| `## Changes` | **≤6 bullets, one line each** | Grouped by intent, never a file list. |
 
-Drop any section that would be empty.
+- **A visual, when the shape of the change is the point.** At most one, in Summary, under the sentence it supports. It sits outside the word budget, but keep it to ~12 lines and only the nodes the point needs.
 
-- **One line per bullet — no paragraph under a bold lead.** That shape is the main way a description doubles in size. If a bullet truly needs a paragraph, the explanation belongs in a code comment: put it there and leave a pointer here.
+| The change… | Visual |
+|---|---|
+| moves a flow between services or components | Mermaid `sequenceDiagram` / `flowchart` |
+| changes the control flow inside one service | call tree in a `text` block |
+| adds a module layout or is a broad refactor | shallow file tree, one `# role` comment per entry |
+| adds an algorithm or state logic | pseudocode in a `text` block |
 
-```markdown
-<!-- Four lines of ABI reasoning nobody asked for -->
-**`CudaError` was deliberately not touched.** A `Cancelled` variant there would have
-ridden the existing `CudaResult` path, but that enum is `#[repr(u32)]` in
-`cudart-sys/src/bindings.rs` and bindgen-generated: a synthetic variant misrepresents
-the C ABI and would be lost on the next regeneration.
+Skip it when it repeats the Summary or the change sits in one function. **Never** a `diff`-shaped tree (`+`/`-` lines on a tree), and never a full code block — the diff already shows the code.
 
-<!-- One line, and the reasoning now lives where the next person will hit it -->
-- No `Cancelled` variant on `CudaError` — it's bindgen `#[repr(u32)]`; see the comment there.
-```
-
-- **Notes for reviewer is not a design doc.** Rejected alternatives, ABI reasoning, and invariants live next to the code that depends on them. Keep this section for a **known follow-up**, a **deliberate omission**, or a **trade-off the diff can't show** — three at most, and if there are more, that's a sign the code needs the comments.
-- **Group changes by intent**, not by file. The diff shows *what*; the description explains *why*.
-- **Same test as the commit body:** every line must carry a fact the reader can't get from the diff.
-  Background on how the system works, a walkthrough of code you didn't touch, and self-narration
-  ("the thing to watch here is…") are the three that pad a description most.
+- **No Test plan, no Notes for reviewer, no Risks.** CI already shows tests, clippy, and fmt. Rejected alternatives, deliberate omissions, and invariants go in code comments next to the code they explain.
+- **One exception — a one-way door.** If a revert cannot undo the change (a destructive migration, a public API removal, a changed on-disk or wire format, deleted data), add one line after Changes: `**One-way door:** <what a revert cannot bring back>`. A two-way door gets no line.
+- **One line per bullet — no paragraph under a bold lead.** That shape is the main way a description doubles in size. If a bullet needs a paragraph, the explanation belongs in a code comment.
+- **Every line carries a fact the reader can't get from the diff.** Background on how the system works, a walkthrough of code you didn't touch, and self-narration ("the thing to watch here is…") pad a description most.
 - **Link only what reviewers can open** — a ticket/issue id, a related MR/PR. **Never** reference local flow docs, `~/.context/` paths, or internal slice/task numbers that live only on your machine — they're useless to other devs.
 
-## Step 4 — Be honest about testing
+## Step 4 — Hand off
 
-- Only list a check under **Test plan** if it was actually run — cite the command/output. Follows the "no 'done' without proof" rule.
-- If nothing was run, write `Not yet verified` and say what *should* be run — don't fabricate a passing test plan.
+Print the title and description in a code block so the user can copy it. If the description holds a visual, fence the outer block with four backticks so the inner fence does not close it. Then offer — don't do it — to open it (`gh pr create` / `glab mr create`). Opening a PR/MR is an outward-facing action: get an explicit yes first.
 
-## Step 5 — Hand off
-
-Print the title and description in a code block so the user can copy it. Then offer — don't do it — to open it (`gh pr create` / `glab mr create`). Opening a PR/MR is an outward-facing action: get an explicit yes first.
-
-## Step 6 — If you opened it, print the URL
+## Step 5 — If you opened it, print the URL
 
 The first thing the user does next is open the PR, so **always end with the full URL on its own line** — never just "PR created" or a bare number.
 
