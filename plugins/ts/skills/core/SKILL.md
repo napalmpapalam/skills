@@ -250,7 +250,16 @@ export const parseServerParams = (json: string): ServerParams => {
 
 ## Errors
 
-- **Throw. No `Result` type.**
+- **Throw when the failure ends the operation** — a failed command, a broken step. A caller
+  higher up handles it.
+- **Return the error when the caller handles it on the spot and goes on.** The error is part of
+  the type: `Promise<string | ReadError>`. The caller narrows with `instanceof`, and the
+  compiler does not let it use the value before that.
+- **`T | E`, not a `Result<T, E>` wrapper.** `instanceof` is the type guard. Use a wrapper only
+  when `T` itself can be an `Error`.
+- **No magic values.** `'?'`, `-1`, `''` or `null` that mean "it failed" look like a real
+  value, and the signature hides the failure. A display such as `'?'` belongs to the output
+  edge only.
 - **One class per failure a caller handles differently.** `public name = 'X'` as a field; the
   caller narrows with `instanceof`.
 - **Keep the cause:** `throw new Error('deploy failed', { cause: e })`.
@@ -259,34 +268,36 @@ export const parseServerParams = (json: string): ServerParams => {
 - **`assert(cond, msg)` over `if (!cond) throw`** — one line, and it narrows. One shared
   `assert` in `helpers/`.
 - **Cleanup goes in one `finally`**, not in each branch.
-- **Never swallow.** No empty `catch {}`. A deliberate ignore returns an explicit fallback and
-  says why.
-- **A fallback catches only the failure it expects.** Narrow with `instanceof` and rethrow the
-  rest. A catch-all also hides your own bugs: a wrong ABI or a `TypeError` gives the same
-  fallback as a failed request.
-- **A fallback keeps the reason.** Put a short reason in the fallback value, or log it. A bare
-  `'?'` or `null` hides why.
+- **Never swallow.** No empty `catch {}`. A deliberate ignore says why.
+- **A catch handles only the failure it expects.** Narrow with `instanceof` and rethrow the
+  rest. A catch-all also hides your own bugs: a wrong ABI or a `TypeError` looks the same as a
+  failed request.
 - **Log where you decide**, not where you rethrow.
 
 ```ts
-// Catch-all — a bug in read() also prints ?
-const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+// Magic value — the signature says string, and a failure is a string too
+const read = async (value: () => Promise<bigint>): Promise<string> => {
   try {
-    return String(await read())
+    return String(await value())
   } catch {
     return '?'
   }
 }
 
-// Narrow — only a failed RPC call falls back, and the reason stays
-const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+// The error is in the type — a narrow catch, and the reason stays in the error
+const read = async (value: () => Promise<bigint>): Promise<string | ReadError> => {
   try {
-    return String(await read())
+    return String(await value())
   } catch (e) {
     if (!(e instanceof BaseError)) throw e
 
-    return `? (${e.shortMessage})`
+    return new ReadError(e.shortMessage, { cause: e })
   }
+}
+
+// The output edge is the only place that knows about '?'
+const show = (value: string | ReadError): string => {
+  return value instanceof ReadError ? '?' : value
 }
 ```
 

@@ -51,6 +51,8 @@ violations that slip through most:
 - a scattered module-level `let`, or work at import time
 - `any`, a `!` non-null assertion, an `as` cast, an unnarrowed `catch (e)`
 - nesting past 2 levels, an `else`, a C-style `for`
+- a magic value (`'?'`, `-1`, `null`) for a failure the caller handles — instead of the error
+  in the return type; a catch-all `catch` that does not narrow
 - `if (!x) throw` where `assert()` fits; cleanup repeated in two branches instead of `finally`
 - `console.log` or a raw `process.stdout.write` outside the logger
 - hand-written type checks on external data instead of a zod schema
