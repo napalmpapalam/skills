@@ -261,7 +261,34 @@ export const parseServerParams = (json: string): ServerParams => {
 - **Cleanup goes in one `finally`**, not in each branch.
 - **Never swallow.** No empty `catch {}`. A deliberate ignore returns an explicit fallback and
   says why.
+- **A fallback catches only the failure it expects.** Narrow with `instanceof` and rethrow the
+  rest. A catch-all also hides your own bugs: a wrong ABI or a `TypeError` gives the same
+  fallback as a failed request.
+- **A fallback keeps the reason.** Put a short reason in the fallback value, or log it. A bare
+  `'?'` or `null` hides why.
 - **Log where you decide**, not where you rethrow.
+
+```ts
+// Catch-all — a bug in read() also prints ?
+const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+  try {
+    return String(await read())
+  } catch {
+    return '?'
+  }
+}
+
+// Narrow — only a failed RPC call falls back, and the reason stays
+const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+  try {
+    return String(await read())
+  } catch (e) {
+    if (!(e instanceof BaseError)) throw e
+
+    return `? (${e.shortMessage})`
+  }
+}
+```
 
 ```ts
 export class Interrupted extends Error {
