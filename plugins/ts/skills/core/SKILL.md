@@ -163,6 +163,21 @@ third.
 
 - **Arrow consts with an explicit return type:** `export const parseX = (raw: string): X => …`.
   `function` only for an assertion signature (`asserts x`).
+- **An expression body fits on the signature line, or it becomes a block.** When the arrow and
+  its expression do not fit in 100 columns, prettier moves the expression to the next line.
+  Write `{ return … }` instead — and do not forget the `return`.
+
+  ```ts
+  // Hanging body
+  export const adi = (run: Run, args: string[], opts: AdiOpts = {}): Promise<string> =>
+    runCommand(run.adiBin, args, { ...opts, display: 'adi', signal: run.signal })
+
+  // Block
+  export const adi = (run: Run, args: string[], opts: AdiOpts = {}): Promise<string> => {
+    return runCommand(run.adiBin, args, { ...opts, display: 'adi', signal: run.signal })
+  }
+  ```
+
 - **Short bodies — ~15 lines.** Longer: extract a named step. The name replaces a comment.
 - **At most 3 parameters.** More: one options object, `opts`.
 - **No positional booleans.** `parse(input, true)` → an options object or an enum argument.
@@ -224,8 +239,9 @@ const ServerParamsSchema = z.object({
 
 export type ServerParams = z.infer<typeof ServerParamsSchema>
 
-export const parseServerParams = (json: string): ServerParams =>
-  ServerParamsSchema.parse(JSON.parse(json))
+export const parseServerParams = (json: string): ServerParams => {
+  return ServerParamsSchema.parse(JSON.parse(json))
+}
 ```
 
 - **Derive the type with `z.infer`.** Never hand-write a type next to a schema.
