@@ -1,0 +1,338 @@
+---
+name: core
+description: The TypeScript conventions that apply to almost every edit — code layout and blank lines, DRY, control flow, functions, types and enums, zod at boundaries, errors, async, module state, logging, classes, files and imports, comments, and naming. Use whenever writing, changing, or reviewing TypeScript, declaring types or enums, parsing external data, adding try/catch or error classes, writing async code, organizing files, barrels and imports, writing comments or TSDoc, refactoring code to be shorter, flatter or less repetitive, naming anything, or when the user asks about idiomatic TypeScript. This is the default TypeScript skill — load it first; reach for testing, tooling, or library on top of it when the task calls for them.
+---
+
+# TypeScript Core Rules
+
+The conventions that govern essentially every TypeScript edit. Topic skills stack on top:
+`dd:ts:testing`, `dd:ts:tooling`, `dd:ts:library` (published packages only).
+
+Prettier owns quotes, semicolons and wrapping: no semicolons, single quotes, 100 columns
+(`dd:ts:tooling`). Write that way from the start. Prettier does **not** add blank lines, merge
+copies, or split a long function. Those three are the rules a review flags most, and only you
+can follow them.
+
+## Layout: paragraphs, not walls
+
+A function body is a run of paragraphs. Twenty lines with no blank line are unreadable even when
+each line is fine.
+
+- **One step = one paragraph.** Lines that do one step — bind the inputs, start a process, build
+  one value — stay together. A blank line goes between steps.
+- **A block statement is its own paragraph.** A blank line goes before and after every `if`,
+  `switch`, `try`, `for` and `while`, a one-line `if (x) return y` too. Exceptions: the first and
+  the last statement of a body.
+- **Consecutive guard clauses are one paragraph** — no blank lines between them.
+- **A short body stays tight.** Up to ~4 simple statements and no blocks: no blank lines.
+- **Blank line between class members and between top-level declarations**, always. One after
+  the imports, one between import groups.
+
+```ts
+// Wall — five steps, no breaks
+export const runCommand = async (command: string, args: string[]): Promise<string> => {
+  const start = performance.now()
+  log.command([command, ...args].map(quote).join(' '))
+  const proc = spawn(command, args)
+  const stdout = await collect(proc)
+  const code = await proc.exited
+  if (stop.signal.aborted) throw new Interrupted()
+  const took = duration(secondsSince(start))
+  if (code) {
+    log.fail(`✗ exit ${code} after ${took}`)
+    throw new Error(`${command} exited with ${code}`)
+  }
+  log.ok(`✓ ${took}`)
+  return stdout
+}
+
+// Paragraphs — announce, run, check, report
+export const runCommand = async (command: string, args: string[]): Promise<string> => {
+  const start = performance.now()
+  log.command([command, ...args].map(quote).join(' '))
+
+  const proc = spawn(command, args)
+  const stdout = await collect(proc)
+  const code = await proc.exited
+
+  if (stop.signal.aborted) throw new Interrupted()
+
+  const took = duration(secondsSince(start))
+
+  if (code) {
+    log.fail(`✗ exit ${code} after ${took}`)
+    throw new Error(`${command} exited with ${code}`)
+  }
+
+  log.ok(`✓ ${took}`)
+  return stdout
+}
+```
+
+### Long calls
+
+When the arguments do not fit on one line, put **one logical unit per line**. A flag and its
+value are one unit. Prettier puts each string of a wrapped array on its own line, so it splits a
+flag from its value — keep them as `[flag, value]` pairs and `.flat()` them at the call.
+
+```ts
+// Wall — which value belongs to which flag?
+await runCommand('docker', [
+  'run', '-d', '--name', SERVER_CONTAINER, '--user', '0:0',
+  '--add-host', 'host.docker.internal:host-gateway', '-p', '3050:3050',
+  '--env-file', 'server/server.env', image,
+])
+
+// One pair per line, a comment sits next to its flag
+await dockerRun(
+  [
+    ['--name', SERVER_CONTAINER],
+    ['--user', '0:0'], // the image runs as app, a new volume belongs to root
+    ['--add-host', 'host.docker.internal:host-gateway'],
+    ['-p', '3050:3050'],
+    ['--env-file', 'server/server.env'],
+  ],
+  image,
+)
+```
+
+## DRY
+
+The usual advice — "three similar lines beat a premature abstraction" — **does not apply here**.
+In this codebase that default produced copy-paste. **The second copy is the signal**, not the
+third.
+
+- **Search before you write.** Look in `helpers/`, in the module you are in, and in the module
+  that owns the concern. Use what exists; add an option to it if it lacks one.
+- **Copies to catch:**
+
+| Copy | Fix |
+|---|---|
+| the same expression twice — `Object.keys(scenarios).join(', ')` | a `const` |
+| the same call prefix — `runQuiet('docker', …)` four times | a wrapper — `docker(...args)` |
+| the same cleanup in two branches | one `finally` |
+| the same type check in two modules — `typeof v === 'number'` | one helper in `helpers/`, or a zod schema |
+| a second way to do what a module already does — a raw `Bun.spawn` next to `runCommand` | the module, extended |
+| two error values for one failure — `new Error('interrupted')` and `new Interrupted()` | one error class |
+| the same literal in two files | one constant |
+
+- **DRY is about knowledge, not look.** Two blocks that look alike but change for different
+  reasons stay separate. Extract the concrete repeated thing — a function, a constant — never a
+  generic framework for it.
+
+## Control flow
+
+- **Max 2 levels of nesting.** Past that, extract a function.
+- **Guard clauses, no `else`.** Invert the condition and return early. A one-line guard has no
+  braces: `if (!id) return null`. A ternary that hides an `else` inside a return is the same
+  thing — sink the special case into an early `return`.
+- **`switch` for a closed set** — a `return` per `case`, a `default` that throws.
+- **A ternary picks a value**, one level. Never nested.
+- **No C-style `for`.** Use `map`, `filter`, `reduce`, `flatMap`, and `forEach` for side effects.
+  `for…of` only for a sequential `await` or an early `break`. `while` only for an algorithm.
+- **Defaults over branches:** `??` for `null`/`undefined`. `||` only when `''` and `0` must fall
+  through too.
+- **Truthiness when every empty value means the same:** `if (code)`, not `if (code !== 0)`;
+  `if (!bin)`, not `if (bin === undefined || bin === '')`. Compare explicitly only when `0` or
+  `''` is a valid value.
+
+## Functions
+
+- **Arrow consts with an explicit return type:** `export const parseX = (raw: string): X => …`.
+  `function` only for an assertion signature (`asserts x`).
+- **Short bodies — ~15 lines.** Longer: extract a named step. The name replaces a comment.
+- **At most 3 parameters.** More: one options object, `opts`.
+- **No positional booleans.** `parse(input, true)` → an options object or an enum argument.
+- **A query has no side effects.** `parseX`, `isX`, `toX` return a value and write nothing.
+- **Private helpers go below the exports** that use them.
+
+## Types
+
+- **`type`, never `interface`.** One form for every shape, and nobody can reopen a `type` from
+  another file by declaration merging.
+- **`unknown`, never `any`.** No `!` non-null assertion — use `?.`, `??`, or `assert()`.
+- **No `as` casts** except `as const` and a brand constructor. Narrow with a type predicate
+  (`isX(v): v is X`) or `assert()`.
+- **Derive, don't restate:** `Omit`, `Pick`, `Partial`, `Exclude`, `ReturnType`, `z.infer`.
+- **A brand for a confusable primitive:** `type ChainId = Brand<bigint, 'ChainId'>`, minted in
+  one constructor or by zod `.brand()`. An `as ChainId` anywhere else means the brand does
+  nothing.
+- `readonly` on fields that never change. `satisfies` checks a literal without widening it.
+
+### Enums
+
+`enum` in PascalCase, members in PascalCase, string values:
+
+```ts
+export enum CheckState {
+  Done = 'done',
+  Waiting = 'waiting',
+  Failed = 'failed',
+}
+
+export type Check =
+  | { state: CheckState.Done; value: string }
+  | { state: CheckState.Waiting }
+  | { state: CheckState.Failed; reason: string }
+```
+
+- **Not an `as const` object, not a bare string union** for the program's own states. A string
+  enum rejects `'done'` where a `CheckState` is expected (TS2322); `as const` and a union accept
+  it.
+- **Never compare a state to a raw string:** `state === CheckState.Done`, never
+  `state === 'done'`.
+- **Plain `enum`, not `const enum`** — `isolatedModules` cannot inline it across files.
+- **Numeric values only when the number is an external format.** Strings read well in a log.
+- `enum` needs `erasableSyntaxOnly` off (`dd:ts:tooling`).
+- A string union stays only for strings a caller types by hand at an API boundary:
+  `type TimeUnitShort = 'd' | 'h' | 'm'`.
+
+## Validation at boundaries
+
+External data — command output, HTTP bodies, env vars, files — is `unknown` until a zod schema
+parses it. Parse once at the edge; inside, trust the type.
+
+```ts
+const ServerParamsSchema = z.object({
+  genesis: z.string(),
+  genesis_chain_id: z.number().int(),
+  genesis_bridgehub_address: z.string(),
+})
+
+export type ServerParams = z.infer<typeof ServerParamsSchema>
+
+export const parseServerParams = (json: string): ServerParams =>
+  ServerParamsSchema.parse(JSON.parse(json))
+```
+
+- **Derive the type with `z.infer`.** Never hand-write a type next to a schema.
+- **No hand-written `isNumber`/`isString` chains on external data** — the schema is the check.
+- **Internal invariants use `assert()`**, not zod.
+
+## Errors
+
+- **Throw. No `Result` type.**
+- **One class per failure a caller handles differently.** `public name = 'X'` as a field; the
+  caller narrows with `instanceof`.
+- **Keep the cause:** `throw new Error('deploy failed', { cause: e })`.
+- **`catch (e)` is `unknown`.** Narrow with `instanceof`; format through one `errorMessage(e)`
+  helper.
+- **`assert(cond, msg)` over `if (!cond) throw`** — one line, and it narrows. One shared
+  `assert` in `helpers/`.
+- **Cleanup goes in one `finally`**, not in each branch.
+- **Never swallow.** No empty `catch {}`. A deliberate ignore returns an explicit fallback and
+  says why.
+- **Log where you decide**, not where you rethrow.
+
+```ts
+export class Interrupted extends Error {
+  public name = 'Interrupted'
+}
+
+export function assert(condition: unknown, message: string): asserts condition {
+  if (!condition) throw new Error(message)
+}
+```
+
+## Async
+
+- **Independent work runs together:** `Promise.all`; `Promise.allSettled` when partial success
+  counts.
+- **Sequential `for…of` + `await`** only when a step needs the previous one or the order is the
+  point.
+- **No floating promises.** Every promise is awaited, returned, or `void p.catch(handle)`.
+- **`.forEach(async …)` awaits nothing** — use `Promise.all(xs.map(…))` or `for…of`.
+- **`await`, not `.then()` chains.** An inline `.catch()` stays for a fallback.
+- **I/O takes an `AbortSignal`.** A timeout aborts on a timer; `clearTimeout` goes in `finally`.
+- **No async constructors or async getters** — a `static async create()` factory, a method.
+
+## Module state and side effects
+
+- **No scattered `let` at module scope.** Several top-level `let`s that several functions
+  change are hidden global state.
+- **State a module owns lives in one private object behind an API:** a class instance
+  (`export const log = new Logger()`), or one private config object that only one exported
+  setter changes.
+- **No work at import time** — no listeners, timers or promises when the module loads. Put it in
+  a function that the entry point calls. A library's own plugin setup (`dayjs.extend(utc)`) is
+  the exception.
+
+## Output and logging
+
+- **All output goes through one logger module** with a method per kind of line: `log.info`,
+  `log.title`, `log.error`. No `console.log`, no `process.stdout.write`.
+- **The logger owns the format.** No color codes, `FAILED:` prefixes or padding at call sites.
+- A library does not log; it throws (`dd:ts:library`).
+
+## Classes
+
+- **A class when there is state or a lifecycle**; arrow functions for transforms. No class of
+  static methods to group functions — a module groups them.
+- **`#field` for private state.** The `private` keyword only in a published library
+  (`dd:ts:library`).
+- **Write `public`** on public members.
+- **Getters over `getX()`** for derived or read-only values. Boolean getters: `isX`, `hasX`.
+- **Member order:** static members, fields, constructor, getters, public methods, private
+  methods.
+- **Composition over inheritance.** Inheritance is for error classes.
+
+## Files, modules, imports
+
+- **One concern per file, under 200 lines.** A domain that outgrows one file becomes a folder:
+  the main module plus focused siblings (`bn/` → `bn.ts`, `parsers.ts`, `format.ts`,
+  `round.ts`).
+- **kebab-case** file and directory names.
+- **Shared vocabulary dirs:** `types/`, `enums/`, `const/`, `helpers/` (pure functions),
+  `errors.ts`. Domain code goes by feature, not by kind.
+- **`@/` alias across directories, `./` inside one directory.** Never `../`.
+- **`import type`** for type-only imports.
+- **Three import groups** — external, `@/`, relative — with a blank line between them.
+- **Named exports only.** No default export.
+- **A barrel `index.ts` holds only re-exports.**
+- **Exports first, private helpers below.**
+
+## Comments
+
+Default to less. The failure to avoid is the **comment poem**: a prose block that explains the
+design to nobody.
+
+- **Budget:** a module header `//` — 1 line or none. A TSDoc `/** … */` — 1 line. An inline
+  `//` — 1–3 lines.
+- **Never a comment longer than the code it describes.**
+- **A function doc starts with a third-person verb** — `Returns…`, `Starts…` — and says what the
+  name and the types do not.
+- **No `@param` / `@returns`** that restate the signature. `@throws` only when the failure is
+  not obvious.
+- **A `//` is for a why** the code cannot show: a workaround, an ordering rule, a spec link. A
+  `//` that says *what* a block does means: extract a named function.
+- **Design rationale lives in a design doc**, not in a file header.
+
+```ts
+// Too much — restates the signature, narrates the body
+/**
+ * Runs the command, streams its stdout and stderr to the log, waits for the exit,
+ * and prints a check mark with the duration.
+ * @param command The command
+ * @param args The arguments
+ * @returns The stdout
+ */
+
+// Enough
+/** Runs a logged command and fails on a non-zero exit. */
+```
+
+## Naming
+
+| Kind | Convention | Example |
+|---|---|---|
+| files, dirs | kebab-case | `server-params.ts` |
+| types, classes, enums, enum members | PascalCase | `CheckState.Done` |
+| constants | SCREAMING_SNAKE_CASE | `FOUNDRY_IMAGE` |
+| functions, variables | camelCase | `parseServerParams` |
+| type parameters | `T`, `U`, `K`, `V` | `Brand<T, B>` |
+
+- **Acronyms are words:** `rpcUrl`, `HttpClient`, `parseJson` — not `RPCURL`.
+- **A verb prefix is a contract:** `isX`/`hasX` — a boolean or a predicate; `parseX` — raw to
+  typed, throws; `assertX` — narrows or throws; `buildX` — builds from parts; `toX` — converts.
+- **No `get` prefix on a plain accessor** — use a getter.
+- **Short names in a short scope:** `cfg`, `opts`, `e`, `acc`.
