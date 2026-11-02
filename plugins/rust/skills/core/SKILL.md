@@ -254,12 +254,13 @@ use crate::context::Context;
 
 - **Short functions** — extract into smaller fns even if used once. Reduce cognitive load
 - **Max 3-4 function arguments** — group into a config/params struct. Never `#[allow(clippy::too_many_arguments)]`
+- **Paragraphs, not walls** — `rustfmt` never adds a blank line, so this is on you. Lines that do one step stay together; a blank line goes between steps. A block (`if`, `match`, `for`, `loop`) is its own paragraph — a blank line before and after, except as the first or last statement of a body. Consecutive guard clauses are one paragraph. A body of ~4 simple statements stays tight.
 
 ## Modularity
 
-- Rule of three before generalizing — don't over-abstract
+- **The second copy is the signal, not the third.** The usual "three similar lines beat a premature abstraction" produced copy-paste here. Search the crate before writing a helper. The same expression, call prefix, check, or literal written twice → a `fn`, a `const`, or a wrapper. The same cleanup in two branches → one exit path. A second implementation of what a module already does → extend that module.
+- **DRY is about knowledge, not look** — two blocks that look alike but change for different reasons stay separate
 - No speculative generics — start concrete, generalize when justified
-- Three similar lines > premature abstraction
 
 ## Naming
 
