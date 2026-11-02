@@ -354,8 +354,24 @@ export function assert(condition: unknown, message: string): asserts condition {
 - **`import type`** for type-only imports.
 - **Three import groups** — external, `@/`, relative — with a blank line between them.
 - **Named exports only.** No default export.
-- **A barrel `index.ts` holds only re-exports.**
+- **Every directory has a barrel `index.ts`**, and it holds only re-exports:
+  `export * from './check-state'`.
+- **Import from the module, not from a file inside it.** Across directories, import the barrel
+  (`@/enums`), never a file behind it (`@/enums/check-state`). Moving or splitting a file then
+  changes one barrel, not every import.
+- **Inside a directory, import a sibling by `./file`**, never through the own barrel. That
+  makes a cycle, and a cycle can give `undefined` at load time.
 - **Exports first, private helpers below.**
+
+```ts
+// File paths — every import knows the layout of enums/ and lib/
+import { CheckState } from '@/enums/check-state'
+import { log } from '@/lib/logger'
+
+// Modules
+import { CheckState } from '@/enums'
+import { log } from '@/lib'
+```
 
 ## Comments
 
