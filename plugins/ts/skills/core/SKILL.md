@@ -25,8 +25,31 @@ each line is fine.
   the last statement of a body.
 - **Consecutive guard clauses are one paragraph** — no blank lines between them.
 - **A short body stays tight.** Up to ~4 simple statements and no blocks: no blank lines.
-- **Blank line between class members and between top-level declarations**, always. One after
-  the imports, one between import groups.
+- **One-line declarations of one group stay together** — `const`s, class fields. A blank line
+  goes between groups.
+- **A multi-line declaration is its own paragraph** — a function, a class, a `type`, an `enum`,
+  an object on several lines. A blank line goes before and after it.
+- **A declaration with a comment above it starts a new paragraph.**
+- **Blank line between class methods**, always. One after the imports, one between import
+  groups.
+
+```ts
+// One blank line per const — the file reads as a list of unrelated facts
+const ANVIL_CONTAINER = 'adi-e2e-anvil'
+
+const SERVER_CONTAINER = 'adi-e2e-server'
+
+const ANVIL_PORT = 8545
+
+const SERVER_PORT = 3050
+
+// Groups — names, then ports
+const ANVIL_CONTAINER = 'adi-e2e-anvil'
+const SERVER_CONTAINER = 'adi-e2e-server'
+
+const ANVIL_PORT = 8545
+const SERVER_PORT = 3050
+```
 
 ```ts
 // Wall — five steps, no breaks
