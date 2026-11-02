@@ -8,9 +8,9 @@ description: The TypeScript conventions that apply to almost every edit — code
 The conventions that govern essentially every TypeScript edit. Topic skills stack on top:
 `dd:ts:testing`, `dd:ts:tooling`, `dd:ts:library` (published packages only).
 
-Prettier owns quotes, semicolons and wrapping: no semicolons, single quotes, 100 columns
-(`dd:ts:tooling`). Write that way from the start. Prettier does **not** add blank lines, merge
-copies, or split a long function. Those three are the rules a review flags most, and only you
+`bun fmt` owns quotes, semicolons, wrapping and import order: no semicolons, single quotes,
+100 columns (`dd:ts:tooling`). Write that way from the start. `bun fmt` does **not** add blank
+lines, merge copies, or split a long function. Those three are the rules a review flags most, and only you
 can follow them.
 
 ## Layout: paragraphs, not walls
@@ -95,7 +95,7 @@ export const runCommand = async (command: string, args: string[]): Promise<strin
 ### Long calls
 
 When the arguments do not fit on one line, put **one logical unit per line**. A flag and its
-value are one unit. Prettier puts each string of a wrapped array on its own line, so it splits a
+value are one unit. `bun fmt` puts each string of a wrapped array on its own line, so it splits a
 flag from its value — keep them as `[flag, value]` pairs and `.flat()` them at the call.
 
 ```ts
@@ -164,7 +164,7 @@ third.
 - **Arrow consts with an explicit return type:** `export const parseX = (raw: string): X => …`.
   `function` only for an assertion signature (`asserts x`).
 - **An expression body fits on the signature line, or it becomes a block.** When the arrow and
-  its expression do not fit in 100 columns, prettier moves the expression to the next line.
+  its expression do not fit in 100 columns, `bun fmt` moves the expression to the next line.
   Write `{ return … }` instead — and do not forget the `return`.
 
   ```ts
@@ -352,7 +352,8 @@ export function assert(condition: unknown, message: string): asserts condition {
   `errors.ts`. Domain code goes by feature, not by kind.
 - **`@/` alias across directories, `./` inside one directory.** Never `../`.
 - **`import type`** for type-only imports.
-- **Three import groups** — external, `@/`, relative — with a blank line between them.
+- **Four import groups** — built-ins (`node:`), packages, `@/`, relative — with a blank line
+  between them. `bun fmt` with `sortImports` keeps this order.
 - **Named exports only.** No default export.
 - **Every directory has a barrel `index.ts`**, and it holds only re-exports:
   `export * from './check-state'`.

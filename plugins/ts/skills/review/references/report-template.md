@@ -21,7 +21,7 @@ blockquote, and include the fix inline.
 |---|---|
 | Formatting | ✓ Passed / ✗ Failed |
 | Types | ✓ Passed / ✗ N errors |
-| ESLint | ✓ No warnings / ✗ N warnings / — not set up |
+| Lint | ✓ No warnings / ✗ N warnings |
 | Tests | ✓ All passing / ✗ N failures |
 
 ---
