@@ -10,7 +10,7 @@ Auto-triggered (loaded on demand when the task matches):
 
 - `dd:ts:core` — the default: layout and blank lines, DRY, control flow, functions, types and enums, zod at boundaries, errors, async, module state, logging, classes, files and imports, comments, naming.
 - `dd:ts:testing` — `bun test`, layout, arrange-act-assert, what to assert, mocking.
-- `dd:ts:tooling` — bun, tsconfig flags, prettier, eslint, workspaces, git hooks.
+- `dd:ts:tooling` — Bun for everything: `bun fmt`, `bun lint`, `bun check`, `bun test`, one `bunfig.toml`, tsconfig flags, workspaces, CI and git hooks.
 - `dd:ts:library` — only for published packages: public surface, package-prefixed names, `private` over `#`, factories, `use*`/`with*`, TSDoc on every export, the build and `exports` map.
 
 `core` carries what applies to almost every edit; the other three are conditional and stack on top. One big `core`, not nine small skills, for the reason the `rust` plugin found: the nudge hook goes quiet after the first skill loads, so that one skill must cover the edit. A separate `comments` skill also never self-triggers — the model does not see "I am about to write a comment" as its own task.

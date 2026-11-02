@@ -10,15 +10,17 @@ skill is invoked explicitly (`/dd:ts:review`), not auto-triggered.
 
 ## Step 1: Automated checks
 
-Run these first. Use the repo's own scripts when they exist (`bun run typecheck`, `bun run
-lint`). Report a failure and fix it before the manual review.
+Run these first, cheap ones first. Report a failure and fix it before the manual review.
 
 ```bash
-bun x prettier --check .          # formatting
-bun x tsc --noEmit                # types
-bun x eslint . --max-warnings=0   # lints, when the repo has eslint
-bun test                          # tests
+bun fmt --check   # formatting and import order
+bun lint          # lints, type-aware per bunfig.toml
+bun check         # types
+bun test          # tests
 ```
+
+On an old Bun, `bun fmt` and `bun lint` fail with `Script not found`. Then the repo is still on
+prettier and eslint — run its own scripts, and report the missing Bun tooling as a MEDIUM issue.
 
 ## Step 2: Identify changes
 
@@ -35,7 +37,7 @@ Invoke each with the Skill tool to load the full criteria:
 1. `dd:ts:core` — layout, DRY, control flow, functions, types, enums, errors, async, module
    state, logging, classes, files, comments, naming
 2. `dd:ts:testing` — layout, shape, what to assert, mocking
-3. `dd:ts:tooling` — bun, tsconfig flags, prettier, eslint
+3. `dd:ts:tooling` — bun, `bun fmt`, `bun lint`, `bun check`, bunfig.toml, tsconfig flags
 4. `dd:ts:library` — only when the code ships as a package
 
 ## Step 4: Review changed files
@@ -65,7 +67,7 @@ For each issue record:
 ## Step 5: Layout and DRY pass — mandatory
 
 Walls of code and copies are what a diff breaks most often and what a reviewer lets through
-most often: the code compiles, prettier is silent, and each line looks fine. So they get their
+most often: the code compiles, `bun fmt` is silent, and each line looks fine. So they get their
 own pass, and the report answers it for **every** changed file.
 
 Find the candidates, then judge them against **Layout** and **DRY** in `dd:ts:core`:
