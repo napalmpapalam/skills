@@ -25,8 +25,31 @@ each line is fine.
   the last statement of a body.
 - **Consecutive guard clauses are one paragraph** — no blank lines between them.
 - **A short body stays tight.** Up to ~4 simple statements and no blocks: no blank lines.
-- **Blank line between class members and between top-level declarations**, always. One after
-  the imports, one between import groups.
+- **One-line declarations of one group stay together** — `const`s, class fields. A blank line
+  goes between groups.
+- **A multi-line declaration is its own paragraph** — a function, a class, a `type`, an `enum`,
+  an object on several lines. A blank line goes before and after it.
+- **A declaration with a comment above it starts a new paragraph.**
+- **Blank line between class methods**, always. One after the imports, one between import
+  groups.
+
+```ts
+// One blank line per const — the file reads as a list of unrelated facts
+const ANVIL_CONTAINER = 'adi-e2e-anvil'
+
+const SERVER_CONTAINER = 'adi-e2e-server'
+
+const ANVIL_PORT = 8545
+
+const SERVER_PORT = 3050
+
+// Groups — names, then ports
+const ANVIL_CONTAINER = 'adi-e2e-anvil'
+const SERVER_CONTAINER = 'adi-e2e-server'
+
+const ANVIL_PORT = 8545
+const SERVER_PORT = 3050
+```
 
 ```ts
 // Wall — five steps, no breaks
@@ -140,6 +163,21 @@ third.
 
 - **Arrow consts with an explicit return type:** `export const parseX = (raw: string): X => …`.
   `function` only for an assertion signature (`asserts x`).
+- **An expression body fits on the signature line, or it becomes a block.** When the arrow and
+  its expression do not fit in 100 columns, prettier moves the expression to the next line.
+  Write `{ return … }` instead — and do not forget the `return`.
+
+  ```ts
+  // Hanging body
+  export const adi = (run: Run, args: string[], opts: AdiOpts = {}): Promise<string> =>
+    runCommand(run.adiBin, args, { ...opts, display: 'adi', signal: run.signal })
+
+  // Block
+  export const adi = (run: Run, args: string[], opts: AdiOpts = {}): Promise<string> => {
+    return runCommand(run.adiBin, args, { ...opts, display: 'adi', signal: run.signal })
+  }
+  ```
+
 - **Short bodies — ~15 lines.** Longer: extract a named step. The name replaces a comment.
 - **At most 3 parameters.** More: one options object, `opts`.
 - **No positional booleans.** `parse(input, true)` → an options object or an enum argument.
@@ -201,8 +239,9 @@ const ServerParamsSchema = z.object({
 
 export type ServerParams = z.infer<typeof ServerParamsSchema>
 
-export const parseServerParams = (json: string): ServerParams =>
-  ServerParamsSchema.parse(JSON.parse(json))
+export const parseServerParams = (json: string): ServerParams => {
+  return ServerParamsSchema.parse(JSON.parse(json))
+}
 ```
 
 - **Derive the type with `z.infer`.** Never hand-write a type next to a schema.
@@ -222,7 +261,34 @@ export const parseServerParams = (json: string): ServerParams =>
 - **Cleanup goes in one `finally`**, not in each branch.
 - **Never swallow.** No empty `catch {}`. A deliberate ignore returns an explicit fallback and
   says why.
+- **A fallback catches only the failure it expects.** Narrow with `instanceof` and rethrow the
+  rest. A catch-all also hides your own bugs: a wrong ABI or a `TypeError` gives the same
+  fallback as a failed request.
+- **A fallback keeps the reason.** Put a short reason in the fallback value, or log it. A bare
+  `'?'` or `null` hides why.
 - **Log where you decide**, not where you rethrow.
+
+```ts
+// Catch-all — a bug in read() also prints ?
+const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+  try {
+    return String(await read())
+  } catch {
+    return '?'
+  }
+}
+
+// Narrow — only a failed RPC call falls back, and the reason stays
+const orUnknown = async (read: () => Promise<bigint>): Promise<string> => {
+  try {
+    return String(await read())
+  } catch (e) {
+    if (!(e instanceof BaseError)) throw e
+
+    return `? (${e.shortMessage})`
+  }
+}
+```
 
 ```ts
 export class Interrupted extends Error {
