@@ -22,9 +22,13 @@ each line is fine.
   one value — stay together. A blank line goes between steps.
 - **A block statement is its own paragraph.** A blank line goes before and after every `if`,
   `switch`, `try`, `for` and `while`, a one-line `if (x) return y` too. Exceptions: the first and
-  the last statement of a body.
+  the last statement of a body, and the next three rules.
 - **Consecutive guard clauses are one paragraph** — no blank lines between them.
-- **A short body stays tight.** Up to ~4 simple statements and no blocks: no blank lines.
+- **A one-line check stays with its value.** An `if` that tests the value bound on the line above
+  joins that paragraph, and so does the line that uses the value next. Bind, check, use is one
+  step.
+- **A short body stays tight.** Up to ~4 simple statements, at most one of them a one-line `if`,
+  and no braced block: no blank lines.
 - **One-line declarations of one group stay together** — `const`s, class fields. A blank line
   goes between groups.
 - **A multi-line declaration is its own paragraph** — a function, a class, a `type`, an `enum`,
@@ -89,6 +93,35 @@ export const runCommand = async (command: string, args: string[]): Promise<strin
 
   log.ok(`✓ ${took}`)
   return stdout
+}
+```
+
+```ts
+// A blank line around every one-line if — the check is cut off from its value
+const loadConfig = async (path: string): Promise<Config | ConfigError> => {
+  if (!path) return DEFAULT_CONFIG
+
+  const text = await readText(path)
+
+  if (text instanceof ReadError) return new ConfigError(path, { cause: text })
+
+  return parseConfig(text)
+}
+
+// The check stays with its value — bind, check, use
+const loadConfig = async (path: string): Promise<Config | ConfigError> => {
+  if (!path) return DEFAULT_CONFIG
+
+  const text = await readText(path)
+  if (text instanceof ReadError) return new ConfigError(path, { cause: text })
+  return parseConfig(text)
+}
+
+// Short body — three statements, one check: no blank lines
+const parseCount = (raw: string): number | ParseError => {
+  if (!raw) return 0
+  const count = Number(raw)
+  return Number.isInteger(count) ? count : new ParseError(raw)
 }
 ```
 
@@ -290,7 +323,6 @@ const read = async (value: () => Promise<bigint>): Promise<string | ReadError> =
     return String(await value())
   } catch (e) {
     if (!(e instanceof BaseError)) throw e
-
     return new ReadError(e.shortMessage, { cause: e })
   }
 }
