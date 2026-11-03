@@ -46,8 +46,9 @@ Review each changed file against all the criteria from Step 3. Check these first
 violations that slip through most:
 
 - `interface` instead of `type`
-- an `as const` object or a string union for the program's own states, or a comparison with a
-  raw string — instead of an `enum`
+- an `as const` object or a string union for a closed set the code defines — states, modes,
+  units, the options of a public API — or a raw string in a comparison, a default value or an
+  argument — instead of an `enum`
 - a scattered module-level `let`, or work at import time
 - `any`, a `!` non-null assertion, an `as` cast, an unnarrowed `catch (e)`
 - nesting past 2 levels, an `else`, a C-style `for`

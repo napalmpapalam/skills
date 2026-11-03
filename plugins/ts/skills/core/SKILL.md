@@ -289,16 +289,17 @@ export type Check =
   | { state: CheckState.Failed; reason: string }
 ```
 
-- **Not an `as const` object, not a bare string union** for the program's own states. A string
-  enum rejects `'done'` where a `CheckState` is expected (TS2322); `as const` and a union accept
-  it.
-- **Never compare a state to a raw string:** `state === CheckState.Done`, never
-  `state === 'done'`.
+- **Not an `as const` object, not a bare string union** for a closed set of values the code
+  defines — states, modes, units, and the options a caller passes to a public API. A string enum
+  rejects `'done'` where a `CheckState` is expected (TS2322); `as const` and a union accept it.
+- **Never write a raw string where an enum member exists** — not in a comparison, a default
+  value or an argument: `state === CheckState.Done`, `unit = TimeUnit.Millisecond`.
 - **Plain `enum`, not `const enum`** — `isolatedModules` cannot inline it across files.
 - **Numeric values only when the number is an external format.** Strings read well in a log.
 - `enum` needs `erasableSyntaxOnly` off (`dd:ts:tooling`).
-- A string union stays only for strings a caller types by hand at an API boundary:
-  `type TimeUnitShort = 'd' | 'h' | 'm'`.
+- **A string union stays only where a dependency already defines one**, and the value goes to
+  that dependency unchanged: `method: RequestInit['method']`. Use its type; do not wrap it in an
+  enum.
 
 ## Validation at boundaries
 

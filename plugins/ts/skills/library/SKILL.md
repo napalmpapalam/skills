@@ -20,6 +20,8 @@ application, a CLI or a test harness does not need them.
   ```
 
 - **Options objects over positional arguments** in every public signature.
+- **An option from a closed set is an enum**, not a string union: `time.add(1, TimeUnit.Day)`,
+  not `time.add(1, 'day')`. The root barrel exports every enum that a public signature takes.
 - **A barrel may re-export a dependency's API** to give consumers one import site.
 
 ## Names carry the package prefix
