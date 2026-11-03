@@ -26,6 +26,6 @@ if [ -n "$transcript" ] && grep -q '"skill":"dd:ts:' "$transcript" 2>/dev/null; 
   exit 0
 fi
 
-echo "No dd:ts:* skill has been loaded this session, so the TypeScript conventions are NOT in your context — you do not know them, and your defaults are not them (your defaults write walls with no blank lines, copy code instead of extracting it, and use as-const objects instead of enums). Call Skill(dd:ts:core) before the next TypeScript edit or answer about TypeScript. Stack a topic skill on top when the task calls for it: testing, tooling, library."
+echo "No dd:ts:* skill has been loaded this session, so the TypeScript conventions are NOT in your context — you do not know them, and your defaults are not them (your defaults put blank lines in the wrong places — a wall with none, or one after every statement — copy code instead of extracting it, and use as-const objects instead of enums). Call Skill(dd:ts:core) before the next TypeScript edit or answer about TypeScript. Stack a topic skill on top when the task calls for it: testing, tooling, library."
 
 exit 0

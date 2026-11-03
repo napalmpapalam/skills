@@ -9,28 +9,34 @@ The conventions that govern essentially every TypeScript edit. Topic skills stac
 `dd:ts:testing`, `dd:ts:tooling`, `dd:ts:library` (published packages only).
 
 `bun fmt` owns quotes, semicolons, wrapping and import order: no semicolons, single quotes,
-100 columns (`dd:ts:tooling`). Write that way from the start. `bun fmt` does **not** add blank
+100 columns (`dd:ts:tooling`). Write that way from the start. `bun fmt` does **not** place blank
 lines, merge copies, or split a long function. Those three are the rules a review flags most, and only you
 can follow them.
 
 ## Layout: paragraphs, not walls
 
-A function body is a run of paragraphs. Twenty lines with no blank line are unreadable even when
-each line is fine.
+A function body is a run of paragraphs. A blank line separates two **steps**, never two
+statements. Both failures are common. A wall is twenty lines with no blank line. The opposite
+failure puts a blank line after every statement, so a three-line method has two blank lines.
 
 - **One step = one paragraph.** Lines that do one step — bind the inputs, start a process, build
   one value — stay together. A blank line goes between steps.
-- **A block statement is its own paragraph.** A blank line goes before and after every `if`,
-  `switch`, `try`, `for` and `while`, a one-line `if (x) return y` too. Exceptions: the first and
-  the last statement of a body, and the next three rules.
-- **Consecutive guard clauses are one paragraph** — no blank lines between them.
-- **A one-line check stays with the line that binds its value.** `const x = …`, then
-  `if (!x.ok) return …`, then the line that uses `x`: one step, one paragraph. A check of a value
-  bound earlier is a guard, and a blank line goes after it — even when the next line uses that
-  value.
-- **A short body stays tight.** The whole body has up to ~4 simple statements, at most one of
-  them a one-line `if`, and no braced block: no blank lines. The last lines of a long body are
-  not a short body.
+- **A short body has no blank lines.** The whole body has up to ~4 statements, at most one of
+  them a one-line `if`, and no braced block. Most methods and helpers are short bodies. The last
+  lines of a long body are not a short body.
+- **A braced block is its own paragraph.** A blank line goes before and after an `if { }`,
+  `switch`, `try`, `for` and `while`. Exceptions: the first and the last statement of a body.
+- **`if`s that test the same value one case at a time are one paragraph**, braced ones too —
+  `typeof value === 'bigint'`, then `'number'`. They are the cases of a `switch`.
+- **A one-line `if` is a statement, not a block.** It gets no blank line of its own. A guard
+  (`if (…) return` or `throw`) joins one of these:
+  - **the next guard** — consecutive guards are one paragraph;
+  - **the line that binds the value it checks** — `const x = …`, then `if (!x.ok) return …`,
+    then the line that uses `x`: one step;
+  - **the last `return`**, when only that `return` follows the guard.
+
+  A guard that joins none of them is a paragraph of its own. So a guard on a value bound earlier
+  keeps the blank line after it, even when the next line uses that value.
 - **One-line declarations of one group stay together** — `const`s, class fields. A blank line
   goes between groups.
 - **A multi-line declaration is its own paragraph** — a function, a class, a `type`, an `enum`,
@@ -99,24 +105,13 @@ export const runCommand = async (command: string, args: string[]): Promise<strin
 ```
 
 ```ts
-// A blank line around every one-line if — the check is cut off from its value
-const loadConfig = async (path: string): Promise<Config | ConfigError> => {
-  if (!path) return DEFAULT_CONFIG
+// A blank line after every statement — a short body cut into three paragraphs
+const parseCount = (raw: string): number | ParseError => {
+  if (!raw) return 0
 
-  const text = await readText(path)
+  const count = Number(raw)
 
-  if (text instanceof ReadError) return new ConfigError(path, { cause: text })
-
-  return parseConfig(text)
-}
-
-// text: bind, check, use. path is bound earlier, so its guard keeps the blank line
-const loadConfig = async (path: string): Promise<Config | ConfigError> => {
-  if (!path) return DEFAULT_CONFIG
-
-  const text = await readText(path)
-  if (text instanceof ReadError) return new ConfigError(path, { cause: text })
-  return parseConfig(text)
+  return Number.isInteger(count) ? count : new ParseError(raw)
 }
 
 // Short body — three statements, one check: no blank lines
@@ -124,6 +119,51 @@ const parseCount = (raw: string): number | ParseError => {
   if (!raw) return 0
   const count = Number(raw)
   return Number.isInteger(count) ? count : new ParseError(raw)
+}
+
+// Short body — a guard and the last return
+const div = (a: bigint, b: bigint): bigint => {
+  if (!b) throw new RangeError('division by zero')
+  return a / b
+}
+
+// Two checks, so not a short body. path is bound earlier, so its guard keeps the blank line.
+// text: bind, check, use.
+const loadConfig = async (path: string): Promise<Config | ConfigError> => {
+  if (!path) return DEFAULT_CONFIG
+
+  const text = await readText(path)
+  if (text instanceof ReadError) return new ConfigError(path, { cause: text })
+  return parseConfig(text)
+}
+
+// Consecutive guards, then the loop as its own paragraph
+const sqrtBigInt = (value: bigint): bigint => {
+  if (value < 0n) throw new RangeError(`${value} is negative`)
+  if (value < 2n) return value
+
+  let root = value
+  let next = (root + 1n) / 2n
+
+  while (next < root) {
+    root = next
+    next = (root + value / root) / 2n
+  }
+
+  return root
+}
+
+// Cases of one value are one paragraph, the braced case too
+const toBigInt = (value: bigint | number | string): bigint => {
+  if (typeof value === 'bigint') return value
+  if (typeof value === 'number') {
+    assert(Number.isSafeInteger(value), `${value} is not a safe integer`)
+    return BigInt(value)
+  }
+
+  const text = value.trim()
+  assert(INTEGER.test(text), `"${value}" is not an integer`)
+  return BigInt(text)
 }
 ```
 

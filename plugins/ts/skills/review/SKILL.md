@@ -68,15 +68,21 @@ For each issue record:
 
 ## Step 5: Layout and DRY pass — mandatory
 
-Walls of code and copies are what a diff breaks most often and what a reviewer lets through
-most often: the code compiles, `bun fmt` is silent, and each line looks fine. So they get their
-own pass, and the report answers it for **every** changed file.
+Bad blank lines and copies are what a diff breaks most often and what a reviewer lets through
+most often: the code compiles, `bun fmt` is silent, and each line looks fine. A blank line can
+be wrong in two ways: a wall has none, and a spaced-out body has one after every statement. So
+they get their own pass, and the report answers it for **every** changed file.
 
 Find the candidates, then judge them against **Layout** and **DRY** in `dd:ts:core`:
 
 ```bash
 # runs of 8+ lines with no blank line — wall candidates
 awk 'FNR == 1 { n = 0 } NF { n++; if (n == 8) print FILENAME ":" FNR - 7 } !NF { n = 0 }' <files>
+
+# a one-line guard with a blank line after it — spaced-out candidates
+awk 'FNR == 1 { p = "" }
+  !NF && p ~ /^[[:space:]]*if \(.*\) (return|throw)/ { print FILENAME ":" FNR - 1 }
+  { p = $0 }' <files>
 
 # lines that appear more than once across the changed files — copy candidates
 sed 's/^[[:space:]]*//' <files> | grep -v '^import' | awk 'length > 25' |
@@ -86,17 +92,18 @@ sed 's/^[[:space:]]*//' <files> | grep -v '^import' | awk 'length > 25' |
 Flag:
 
 - a body with several steps and no blank line between them;
-- a block statement (`if`, `switch`, `try`, a loop) glued to the lines around it — except a
-  one-line check next to the line that binds its value, and a short body;
-- a blank line inside a short body, or between a value and the one-line check of it;
+- a blank line between two statements of one step: inside a short body, between consecutive
+  guards, between a value and its one-line check, or between a guard and the last `return`;
+- a braced block glued to the lines around it, except in a chain of `if`s on one value;
 - a guard on a value bound earlier, glued to the next step;
 - a wrapped call that splits a flag from its value, or packs several units on one line;
 - the same expression, call prefix, check or literal written twice;
 - a second implementation of what a module already does;
 - the same cleanup in two branches.
 
-**Grade these HIGH.** A wall or a copy blocks the merge; it does not warn. Being cosmetic is
-why it survives review — treating it as cosmetic is the failure this pass exists to stop.
+**Grade these HIGH.** A bad blank line or a copy blocks the merge; it does not warn. Being
+cosmetic is why it survives review — treating it as cosmetic is the failure this pass exists to
+stop.
 
 ## Step 6: Comment budget pass — mandatory
 
