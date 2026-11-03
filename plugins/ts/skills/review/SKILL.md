@@ -87,8 +87,9 @@ Flag:
 
 - a body with several steps and no blank line between them;
 - a block statement (`if`, `switch`, `try`, a loop) glued to the lines around it — except a
-  one-line check next to its value, and a short body;
+  one-line check next to the line that binds its value, and a short body;
 - a blank line inside a short body, or between a value and the one-line check of it;
+- a guard on a value bound earlier, glued to the next step;
 - a wrapped call that splits a flag from its value, or packs several units on one line;
 - the same expression, call prefix, check or literal written twice;
 - a second implementation of what a module already does;

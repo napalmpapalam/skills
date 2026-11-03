@@ -24,11 +24,13 @@ each line is fine.
   `switch`, `try`, `for` and `while`, a one-line `if (x) return y` too. Exceptions: the first and
   the last statement of a body, and the next three rules.
 - **Consecutive guard clauses are one paragraph** — no blank lines between them.
-- **A one-line check stays with its value.** An `if` that tests the value bound on the line above
-  joins that paragraph, and so does the line that uses the value next. Bind, check, use is one
-  step.
-- **A short body stays tight.** Up to ~4 simple statements, at most one of them a one-line `if`,
-  and no braced block: no blank lines.
+- **A one-line check stays with the line that binds its value.** `const x = …`, then
+  `if (!x.ok) return …`, then the line that uses `x`: one step, one paragraph. A check of a value
+  bound earlier is a guard, and a blank line goes after it — even when the next line uses that
+  value.
+- **A short body stays tight.** The whole body has up to ~4 simple statements, at most one of
+  them a one-line `if`, and no braced block: no blank lines. The last lines of a long body are
+  not a short body.
 - **One-line declarations of one group stay together** — `const`s, class fields. A blank line
   goes between groups.
 - **A multi-line declaration is its own paragraph** — a function, a class, a `type`, an `enum`,
@@ -108,7 +110,7 @@ const loadConfig = async (path: string): Promise<Config | ConfigError> => {
   return parseConfig(text)
 }
 
-// The check stays with its value — bind, check, use
+// text: bind, check, use. path is bound earlier, so its guard keeps the blank line
 const loadConfig = async (path: string): Promise<Config | ConfigError> => {
   if (!path) return DEFAULT_CONFIG
 
