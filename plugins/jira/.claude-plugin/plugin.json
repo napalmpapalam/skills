@@ -1,0 +1,8 @@
+{
+  "name": "dd:jira",
+  "version": "0.1.0",
+  "description": "Jira conventions — draft and create tickets and scope breakdowns in the team's format",
+  "author": {
+    "name": "Semen Loktionov"
+  }
+}

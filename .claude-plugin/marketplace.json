@@ -85,6 +85,14 @@
       "author": {
         "name": "Semen Loktionov"
       }
+    },
+    {
+      "name": "jira",
+      "source": "./plugins/jira",
+      "description": "Jira conventions \u2014 draft and create tickets and scope breakdowns in the team's format",
+      "author": {
+        "name": "Semen Loktionov"
+      }
     }
   ]
 }

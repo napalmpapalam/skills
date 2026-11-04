@@ -36,6 +36,7 @@ The marketplace also accepts a full git URL:
 | `rust` | Rust conventions plus a `/dd:rust:review` command | `dd:rust:core`, `dd:rust:linting`, `dd:rust:performance`, `dd:rust:serde`, `dd:rust:testing`, `dd:rust:review` |
 | `ts` | TypeScript conventions plus a `/dd:ts:review` command | `dd:ts:core`, `dd:ts:library`, `dd:ts:testing`, `dd:ts:tooling`, `dd:ts:review` |
 | `docker` | Dockerfile authoring rules for small, cacheable, secure images | `dd:docker:dockerfile` |
+| `jira` | Draft and create Jira tickets and scope breakdowns in the team's format | `dd:jira:ticket` |
 | `say` | Manual commands that re-steer how Claude explains something | `dd:say:what` |
 | `rules` | Global house rules injected every session | — (session hook) |
 | `herdr` | Names the herdr pane after Claude's chat title | — (pane hook) |
